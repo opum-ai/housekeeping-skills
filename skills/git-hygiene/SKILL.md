@@ -16,7 +16,7 @@ only irreversible mistake in git housekeeping. Nothing here deletes a branch bec
 upstream is gone, its name looks old, or it "looks merged". It needs a containment proof.
 
 Engine: the Skill tool printed `Base directory for this skill: <dir>`, so run
-`HK="python3 <dir>/../../scripts/hk.py"`.
+`hk() { python3 "<dir>/../../scripts/hk.py" "$@"; }   # a function: works in bash and zsh`.
 
 ## Which branch policy applies
 
@@ -31,7 +31,7 @@ Engine: the Skill tool printed `Base directory for this skill: <dir>`, so run
    Invoke it before creating a branch, opening or landing a PR, promoting, or deleting any
    branch. Do not restate or override its rules here.
 2. **Otherwise**, use the generic flow in `references/generic-flow.md`. Detect the trunk
-   (`$HK status` reports `trunk` and `release`). Follow the repo's own conventions from
+   (`hk status` reports `trunk` and `release`). Follow the repo's own conventions from
    `CONTRIBUTING.md` and `git log`.
 
 Either way, the **dangerous set** needs the user directly:
@@ -51,7 +51,7 @@ At **Minimal**, preserve the work: one WIP commit on the task branch (`WIP: <tas
 things stand`) is fine, and so is a clearly named stash if the branch cannot take a commit.
 Push it. From **Light** up, commit in logical units, as described below.
 
-1. Survey: `$HK status --json` (branch, trunk, uncommitted changes, ahead/behind).
+1. Survey: `hk status --json` (branch, trunk, uncommitted changes, ahead/behind).
    - **On the trunk or release branch?** Stop and branch first. Commits go on a task
      branch, never on `dev` or `main`. A tracker task exists before the branch in Opum
      repos.
@@ -61,7 +61,7 @@ Push it. From **Light** up, commit in logical units, as described below.
    `git add -p` when one file mixes concerns.
 3. **Keep out**:
    - **Junk.** Agent junk (`*.bak`, `*_v2.*`, `debug*.log`, scratch scripts,
-     `*_SUMMARY.md`). `$HK plan --level standard --domains files` lists them. Remove or ignore
+     `*_SUMMARY.md`). `hk plan --level standard --domains files` lists them. Remove or ignore
      them; don't commit them.
    - **Secrets.** Run `gitleaks protect --staged` if installed. Otherwise grep the staged
      diff for `BEGIN .*PRIVATE KEY`, `AKIA[0-9A-Z]{16}`, `ghp_`, `sk-`, `xox[bp]-`, and
@@ -127,7 +127,7 @@ Promotion of `dev` to `main` happens on an explicit request.
 ## Pruning
 
 ```bash
-$HK plan --level standard --domains git   # --level deep adds stale branches and stashes; add --no-gh if gh is unavailable; the plan notes what it could not prove
+hk plan --level standard --domains git   # --level deep adds stale branches and stashes; add --no-gh if gh is unavailable; the plan notes what it could not prove
 ```
 
 Read the plan before applying it:
@@ -147,7 +147,7 @@ Read the plan before applying it:
 - **Findings (`branch.unlanded`, `remote-branch.unlanded`).** Never planned. Report them
   with their unique commit counts. A remote unlanded branch may be someone else's.
 
-Apply with `$HK apply <plan> [--confirm <ids>]`. Anything whose tip moved since planning is
+Apply with `hk apply <plan> [--confirm <ids>]`. Anything whose tip moved since planning is
 skipped as drift. Report it; don't force it.
 
 **Stale "In Progress" / open-work check (Standard).** In quest repos, the tracker listing only

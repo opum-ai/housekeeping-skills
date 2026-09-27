@@ -15,7 +15,7 @@ history. When it gets cluttered, every session pays twice:
 Claude Code already ships part of this job. Use its own tools first, and fill the gaps.
 Don't reimplement them.
 
-Engine: `HK="python3 <dir>/../../scripts/hk.py"`, where `<dir>` is the
+Engine: `hk() { python3 "<dir>/../../scripts/hk.py" "$@"; }   # a function: works in bash and zsh`, where `<dir>` is the
 `Base directory for this skill` that the Skill tool printed. Verified command surface:
 `references/claude-code-surface.md`.
 
@@ -40,8 +40,8 @@ That list is this skill's job.
 ## 2. Survey
 
 ```bash
-$HK plan --level deep --domains harness --chosen-by "…"               # this project: memory, CLAUDE.md, repo settings
-$HK plan --level deep --scope machine --domains harness --chosen-by "…"   # + plugin cache, deleted projects, user settings
+hk plan --level deep --domains harness --chosen-by "…"               # this project: memory, CLAUDE.md, repo settings
+hk plan --level deep --scope machine --domains harness --chosen-by "…"   # + plugin cache, deleted projects, user settings
 claude plugin list
 claude mcp list
 ```
@@ -115,7 +115,7 @@ Memory, CLAUDE.md, settings, and plugin choices encode someone's decisions. The 
 ## 4. Apply the engine's items
 
 ```bash
-$HK apply <plan.json> [--approve-s2] [--confirm <ids>]
+hk apply <plan.json> [--approve-s2] [--confirm <ids>]
 ```
 - **S2** (orphaned plugin versions, dead markers, old scratchpads): one batch approval.
 - **S3** (`claude project purge`): each project confirmed by name.

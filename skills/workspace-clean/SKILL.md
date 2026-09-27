@@ -13,7 +13,7 @@ engine. The engine:
 - refuses tracked files, `.env*`, keys, `.quest/`, `docs/`, and anything outside the
   item's allowed root.
 
-Engine: `HK="python3 <dir>/../../scripts/hk.py"`, where `<dir>` is the
+Engine: `hk() { python3 "<dir>/../../scripts/hk.py" "$@"; }   # a function: works in bash and zsh`, where `<dir>` is the
 `Base directory for this skill` that the Skill tool printed.
 
 **Why not `git clean`?**
@@ -38,7 +38,7 @@ refuses something, report the refusal.
 | `file.untracked`: untracked, not ignored, not junk | immaculate: needs a disposition | **S3** | possibly unsaved work |
 
 ```bash
-$HK plan --level deep --domains files,tmp --chosen-by "user asked to free disk space"
+hk plan --level deep --domains files,tmp --chosen-by "user asked to free disk space"
 ```
 
 ## Judgement the engine can't make
@@ -74,7 +74,7 @@ reinstalling: "node_modules (1.1 GB): the next `npm ci` takes about 40 s".
    nothing preselected.
 
 ```bash
-$HK apply <plan.json> [--approve-s2] [--confirm id1,id2] [--only ids-you-kept]
+hk apply <plan.json> [--approve-s2] [--confirm id1,id2] [--only ids-you-kept]
 ```
 Then report:
 - trashed vs permanently removed (build outputs are `rm`: regenerable, and trashing

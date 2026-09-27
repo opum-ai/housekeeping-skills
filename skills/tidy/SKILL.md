@@ -50,9 +50,16 @@ The Skill tool printed `Base directory for this skill: <dir>`. The engine is
 `<dir>/../../scripts/hk.py`:
 
 ```bash
-HK="python3 <dir>/../../scripts/hk.py"
-$HK doctor            # which tools (gh, docker, quest, lore, trash) are available here
+hk() { python3 "<dir>/../../scripts/hk.py" "$@"; }   # a function: works in bash and zsh
+hk doctor            # which tools (gh, docker, quest, lore, trash) are available here
 ```
+
+`hk apply` acts on the user's behalf, so **their Claude Code permission rules bind it
+too**. Every plan item shows the shell command it is equivalent to, such as
+`git branch -D feat/x` or `docker rm 3f2a…`. A `permissions.deny` rule matching that
+command makes `apply` refuse the item. An `ask` or auto-mode `soft_deny` rule makes it
+wait for a per-item `--confirm` that names the rule. If the harness denies `hk apply`
+itself, that is the answer: report it, and never re-run the deletion another way.
 
 Never remove things with ad-hoc shell instead of `hk`: no `rm -rf "$VAR"`, no
 `git clean -fdx`, no loops over `git branch | grep`. The worst agent cleanup incidents on
@@ -91,8 +98,8 @@ other. Never go higher or wider than the user asked without asking.
 ### 2. Survey (read-only)
 
 ```bash
-$HK status --json                                                   # branch, trunk, ahead/behind, tracker, lore, PRs
-$HK plan --level standard --scope repo --chosen-by "PR merged" --json
+hk status --json                                                   # branch, trunk, ahead/behind, tracker, lore, PRs
+hk plan --level standard --scope repo --chosen-by "PR merged" --json
 ```
 
 Read the plan's:
@@ -135,7 +142,7 @@ Landing changes what is removable: a branch you just merged is now provably land
 again after landing:
 
 ```bash
-$HK plan --level <level> --scope <scope> --chosen-by "..."     # prints the table and "Plan saved: <path>"
+hk plan --level <level> --scope <scope> --chosen-by "..."     # prints the table and "Plan saved: <path>"
 ```
 
 Show the user the plan table. Then gate each item by its class:
@@ -150,7 +157,7 @@ Show the user the plan table. Then gate each item by its class:
   Preselect nothing, and don't offer an "all" option.
 
 ```bash
-$HK apply <plan.json> --approve-s2 --confirm id1,id2      # omit the flags the user did not grant
+hk apply <plan.json> --approve-s2 --confirm id1,id2      # omit the flags the user did not grant
 ```
 
 Hand the domain judgement calls to the domain skills:
@@ -168,15 +175,15 @@ Report skipped and failed items; don't retry around them.
 |---|---|
 | Minimal | The work is recoverable: committed and pushed, or its location is recorded on the task. |
 | Light | + no process this session started is still running; none of its temp files is left |
-| Standard | + `$HK plan --level standard` plans no landed branch; the tracker and docs gates pass; `git status` is clean or every remaining change is explained |
+| Standard | + `hk plan --level standard` plans no landed branch; the tracker and docs gates pass; `git status` is clean or every remaining change is explained |
 | Deep | + bytes reclaimed, from the apply summary |
 | Immaculate | + **every in-scope item has a disposition**, and the final-state checks pass (below) |
 
 **Immaculate verification.**
 
 ```bash
-$HK disposition --level immaculate --scope <scope>          # lists every in-scope item; UNACCOUNTED ones fail it
-$HK disposition --level immaculate --scope <scope> \
+hk disposition --level immaculate --scope <scope>          # lists every in-scope item; UNACCOUNTED ones fail it
+hk disposition --level immaculate --scope <scope> \
     --set <id>=kept:"retain/ branch, reason in docs/…" \
     --set <id>=deferred:"HS-14" --set <id>=accepted:"local IDE config"
 ```

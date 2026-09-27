@@ -11,7 +11,7 @@ someone's terminal. A container with no compose label may belong to another proj
 it may be the CI runner. This skill acts only on things it can attribute, and reports the
 rest.
 
-Engine: `HK="python3 <dir>/../../scripts/hk.py"`, where `<dir>` is the
+Engine: `hk() { python3 "<dir>/../../scripts/hk.py" "$@"; }   # a function: works in bash and zsh`, where `<dir>` is the
 `Base directory for this skill` that the Skill tool printed.
 
 ## Your own background work first
@@ -28,7 +28,7 @@ outward.
 ## Survey
 
 ```bash
-$HK plan --level standard --domains runtime --chosen-by "…"      # add --scope machine only when asked about the whole machine
+hk plan --level standard --domains runtime --chosen-by "…"      # add --scope machine only when asked about the whole machine
 lsof -nP -iTCP -sTCP:LISTEN          # who holds which port (read-only)
 docker context show                  # hk inspects the active context only; say which
 ```
@@ -77,7 +77,7 @@ docker context show                  # hk inspects the active context only; say 
 ## Applying
 
 ```bash
-$HK apply <plan.json> [--approve-s2] [--confirm id1,id2] [--force-kill]
+hk apply <plan.json> [--approve-s2] [--confirm id1,id2] [--force-kill]
 ```
 - **S1** runs without asking.
 - **S2** needs one batch approval via AskUserQuestion: count, what they are, the space
