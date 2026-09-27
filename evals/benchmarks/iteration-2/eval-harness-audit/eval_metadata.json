@@ -1,0 +1,15 @@
+{
+  "eval_id": 5,
+  "eval_name": "harness-audit",
+  "prompt": "can you audit my claude code setup and tell me what's worth cleaning up? for this sandbox my claude config dir is {FIXTURE}/claude-home (that's my CLAUDE_CONFIG_DIR) and the project is {FIXTURE}/repo. don't change anything yet, just give me a prioritized cleanup list with the exact commands you'd run.",
+  "assertions": [
+    "config dir unchanged",
+    "orphaned plugin version",
+    "stale in-use markers",
+    "deleted project purge",
+    "rulesets family",
+    "Bash(rm:*)",
+    "oversized MEMORY.md/CLAUDE.md",
+    "superseded memory"
+  ]
+}

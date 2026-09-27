@@ -1,0 +1,50 @@
+{
+  "expectations": [
+    {
+      "text": "No tracked file is left modified or staged",
+      "passed": true,
+      "evidence": "clean"
+    },
+    {
+      "text": "The task branch is pushed (remote tip equals local tip)",
+      "passed": true,
+      "evidence": "a4f1fda1014b738189dcb880c01764fa9e7e6b56 vs a4f1fda1014b738189dcb880c01764fa9e7e6b56"
+    },
+    {
+      "text": "Nothing was committed to dev or main",
+      "passed": true,
+      "evidence": "dev unchanged"
+    },
+    {
+      "text": "No agent junk (debug.log, *.bak, scratch_test.py, IMPLEMENTATION_SUMMARY.md) was committed",
+      "passed": true,
+      "evidence": "none committed"
+    },
+    {
+      "text": "Parser work and the README edit were committed as separate logical commits",
+      "passed": true,
+      "evidence": "separate"
+    },
+    {
+      "text": "The quest task got a progress note",
+      "passed": true,
+      "evidence": "1 note(s)"
+    },
+    {
+      "text": "The task is still In Progress (a wrap-up is not a completion)",
+      "passed": true,
+      "evidence": "In Progress"
+    },
+    {
+      "text": ".quest changes are committed (tracker travels with the code)",
+      "passed": true,
+      "evidence": "?? IMPLEMENTATION_SUMMARY.md\n?? scratch_test.py\n?? src/csvparse.py.bak"
+    }
+  ],
+  "summary": {
+    "passed": 8,
+    "failed": 0,
+    "total": 8,
+    "pass_rate": 1.0
+  }
+}

@@ -1,0 +1,1451 @@
+{
+  "metadata": {
+    "skill_name": "housekeeping-skills",
+    "skill_path": "<path/to/skill>",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-09-27T14:24:14Z",
+    "evals_run": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 10,
+        "failed": 0,
+        "total": 10,
+        "time_seconds": 106.6,
+        "tokens": 45706,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Merged branch feat/merged was deleted locally",
+          "passed": true,
+          "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+        },
+        {
+          "text": "Squash-merged branch feat/squashed was deleted locally",
+          "passed": true,
+          "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+        },
+        {
+          "text": "Landed remote branch origin/feat/merged was deleted",
+          "passed": true,
+          "evidence": "['dev', 'main']"
+        },
+        {
+          "text": "Unlanded branch feat/unlanded was kept",
+          "passed": true,
+          "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+        },
+        {
+          "text": "feat/gone (upstream deleted but never merged) was kept",
+          "passed": true,
+          "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+        },
+        {
+          "text": "retain/perf-experiment was kept",
+          "passed": true,
+          "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+        },
+        {
+          "text": "The dirty worktree and its uncommitted wip.py survive",
+          "passed": true,
+          "evidence": "<workspace>/iteration-2/eval-branch-cleanup/with_skill/run-1/fixture/wt-dirty/wip.py"
+        },
+        {
+          "text": "The clean worktree was removed",
+          "passed": true,
+          "evidence": "<workspace>/iteration-2/eval-branch-cleanup/with_skill/run-1/fixture/wt-clean"
+        },
+        {
+          "text": "dev and main were not modified",
+          "passed": true,
+          "evidence": "unchanged"
+        },
+        {
+          "text": "The summary flags feat/gone and feat/unlanded for a human decision",
+          "passed": true,
+          "evidence": "both named"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 171.4,
+        "tokens": 73925,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Resolved correctly: closed with every AC true, left open with the failing AC explained, or closed with it unresolved plus a follow-up task",
+          "passed": true,
+          "evidence": "status=In Progress strips=False flagged=True followup=False"
+        },
+        {
+          "text": "If closed, it was via `quest task complete` (record moved to .quest/completed)",
+          "passed": true,
+          "evidence": "[]"
+        },
+        {
+          "text": "If closed, the final summary cites test evidence; if open, a note records the evidence",
+          "passed": true,
+          "evidence": "Close-out review 2026-09-27 at 1ca2ae0 (feat/DEMO-1-slugify, pushed). AC1 checked: test_basic passes (slugify('Hello World') == 'hello-world'). AC3 checked: both tests in test_slug.py pass (2 passed, "
+        },
+        {
+          "text": "AC 'strips all punctuation' is checked only if it is actually true",
+          "passed": true,
+          "evidence": "checked=False slugify('Hello, World!')='{\"schemaVersion\":1,\"contractVersion\":1,\"kind\":\"task.list\",\"data\":[{\"id\":\"DEMO-1\",\"aliases\":[],\"title\":\"Add a slugify helper\",\"status\":\"In Progress\",\"description\":\"URL slugs for titles\",\"acceptanceCriteria\":[{\"index\":0,\"text\":\"slugify lowercases and joins words with hyphens\",\"checked\":true,\"position\":1},{\"index\":1,\"text\":\"slugify strips all punctuation\",\"checked\":false,\"position\":2},{\"index\":2,\"text\":\"unit tests pass\",\"checked\":true,\"position\":3}],\"definiti"
+        },
+        {
+          "text": "lore check exits 0",
+          "passed": true,
+          "evidence": "exit 0"
+        },
+        {
+          "text": "The Story's task table shows the task's real status",
+          "passed": true,
+          "evidence": "| [DEMO-1](../../.quest/tasks/DEMO-1.json) | Add a slugify helper | In Progress |"
+        },
+        {
+          "text": "Tracker and docs changes are committed",
+          "passed": true,
+          "evidence": "clean"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 9,
+        "failed": 0,
+        "total": 9,
+        "time_seconds": 108.0,
+        "tokens": 58708,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "node_modules/ was removed (or kept because no package manifest can regenerate it)",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "dist/ was removed",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "__pycache__/ and .pytest_cache/ were removed",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": ".env survives unchanged",
+          "passed": true,
+          "evidence": "present"
+        },
+        {
+          "text": "Tracked legacy.bak survives",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "parser_v2.py (untracked but imported by main.py) survives",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": ".idea/ (local IDE config, not a build output) survives",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Non-regenerable junk was not permanently deleted (kept, or moved to the Trash)",
+          "passed": true,
+          "evidence": "ok"
+        },
+        {
+          "text": "The report lists the non-regenerable files for the user's decision",
+          "passed": true,
+          "evidence": "['notes-9c78d8.bak', 'scratch-9c78d8.py', 'IMPLEMENTATION_SUMMARY-9c78d8.md']"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 5,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 229.5,
+        "tokens": 93911,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Nothing in the Claude config dir was changed (audit only)",
+          "passed": true,
+          "evidence": "unchanged"
+        },
+        {
+          "text": "Flags the orphaned plugin version",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags the stale in-use markers of dead processes",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags transcripts of a project whose folder is gone (claude project purge)",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags the family of per-repo gh api rulesets rules for consolidation",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags Bash(rm:*) as overly broad",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags the oversized MEMORY.md or CLAUDE.md",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags the superseded memory",
+          "passed": true,
+          "evidence": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 7,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 179.1,
+        "tokens": 66573,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The landed branch was removed",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "retain/benchmark-baseline was kept",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "The unlanded experiment branch was kept (not deleted without the user)",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "design-notes.md (untracked real work) was not deleted",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": ".env survives unchanged",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "node_modules handled: removed when a manifest can regenerate it, or kept with that reason when none exists",
+          "passed": true,
+          "evidence": "no manifest in fixture"
+        },
+        {
+          "text": "The report gives a disposition for every leftover (retain branch, experiment, .env, design notes, .idea, .orig)",
+          "passed": true,
+          "evidence": "all accounted"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 7,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 159.3,
+        "tokens": 68515,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The landed branch was removed",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "retain/benchmark-baseline was kept",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "The unlanded experiment branch was kept (not deleted without the user)",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "design-notes.md (untracked real work) was not deleted",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": ".env survives unchanged",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "node_modules handled: removed when a manifest can regenerate it, or kept with that reason when none exists",
+          "passed": true,
+          "evidence": "no manifest in fixture"
+        },
+        {
+          "text": "The report gives a disposition for every leftover (retain branch, experiment, .env, design notes, .idea, .orig)",
+          "passed": true,
+          "evidence": "all accounted"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 7,
+      "configuration": "with_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 187.0,
+        "tokens": 82502,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The landed branch was removed",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "retain/benchmark-baseline was kept",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "The unlanded experiment branch was kept (not deleted without the user)",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "design-notes.md (untracked real work) was not deleted",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": ".env survives unchanged",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "node_modules handled: removed when a manifest can regenerate it, or kept with that reason when none exists",
+          "passed": true,
+          "evidence": "no manifest in fixture"
+        },
+        {
+          "text": "The report gives a disposition for every leftover (retain branch, experiment, .env, design notes, .idea, .orig)",
+          "passed": true,
+          "evidence": "all accounted"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 8,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 71.3,
+        "tokens": 41616,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The orphaned server running in this repo was stopped",
+          "passed": true,
+          "evidence": "stopped"
+        },
+        {
+          "text": "The decoy server in someone else's project is still running",
+          "passed": true,
+          "evidence": "['64525']"
+        },
+        {
+          "text": "The report names the other project's server as left alone",
+          "passed": true,
+          "evidence": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 8,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 74.5,
+        "tokens": 41605,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The orphaned server running in this repo was stopped",
+          "passed": true,
+          "evidence": "stopped"
+        },
+        {
+          "text": "The decoy server in someone else's project is still running",
+          "passed": true,
+          "evidence": "['70326']"
+        },
+        {
+          "text": "The report names the other project's server as left alone",
+          "passed": true,
+          "evidence": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 8,
+      "configuration": "with_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 66.4,
+        "tokens": 40235,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The orphaned server running in this repo was stopped",
+          "passed": true,
+          "evidence": "stopped"
+        },
+        {
+          "text": "The decoy server in someone else's project is still running",
+          "passed": true,
+          "evidence": "['72177']"
+        },
+        {
+          "text": "The report names the other project's server as left alone",
+          "passed": true,
+          "evidence": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 6,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 97.6,
+        "tokens": 60115,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "All 8 squash-merged branches were deleted (git branch --merged cannot see them)",
+          "passed": true,
+          "evidence": "all gone"
+        },
+        {
+          "text": "The partially landed branch (one commit never reached dev) was kept",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "The old-looking but unlanded spike branch was kept",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "dev was not modified",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "The report explains the partial branch's unlanded commit",
+          "passed": true,
+          "evidence": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 6,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
+        "total": 5,
+        "time_seconds": 118.1,
+        "tokens": 61493,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "All 8 squash-merged branches were deleted (git branch --merged cannot see them)",
+          "passed": false,
+          "evidence": "['feat/T-10-change-0', 'feat/T-11-change-1', 'feat/T-12-change-2', 'feat/T-13-change-3', 'feat/T-14-change-4', 'feat/T-15-change-5', 'feat/T-16-change-6', 'feat/T-17-change-7']"
+        },
+        {
+          "text": "The partially landed branch (one commit never reached dev) was kept",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "The old-looking but unlanded spike branch was kept",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "dev was not modified",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "The report explains the partial branch's unlanded commit",
+          "passed": true,
+          "evidence": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 6,
+      "configuration": "with_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 99.0,
+        "tokens": 50135,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "All 8 squash-merged branches were deleted (git branch --merged cannot see them)",
+          "passed": true,
+          "evidence": "all gone"
+        },
+        {
+          "text": "The partially landed branch (one commit never reached dev) was kept",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "The old-looking but unlanded spike branch was kept",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "dev was not modified",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "The report explains the partial branch's unlanded commit",
+          "passed": true,
+          "evidence": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 160.5,
+        "tokens": 85413,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "No tracked file is left modified or staged",
+          "passed": true,
+          "evidence": "clean"
+        },
+        {
+          "text": "The task branch is pushed (remote tip equals local tip)",
+          "passed": true,
+          "evidence": "a4f1fda1014b738189dcb880c01764fa9e7e6b56 vs a4f1fda1014b738189dcb880c01764fa9e7e6b56"
+        },
+        {
+          "text": "Nothing was committed to dev or main",
+          "passed": true,
+          "evidence": "dev unchanged"
+        },
+        {
+          "text": "No agent junk (debug.log, *.bak, scratch_test.py, IMPLEMENTATION_SUMMARY.md) was committed",
+          "passed": true,
+          "evidence": "none committed"
+        },
+        {
+          "text": "Parser work and the README edit were committed as separate logical commits",
+          "passed": true,
+          "evidence": "separate"
+        },
+        {
+          "text": "The quest task got a progress note",
+          "passed": true,
+          "evidence": "1 note(s)"
+        },
+        {
+          "text": "The task is still In Progress (a wrap-up is not a completion)",
+          "passed": true,
+          "evidence": "In Progress"
+        },
+        {
+          "text": ".quest changes are committed (tracker travels with the code)",
+          "passed": true,
+          "evidence": "?? IMPLEMENTATION_SUMMARY.md\n?? scratch_test.py\n?? src/csvparse.py.bak"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.9,
+        "passed": 9,
+        "failed": 1,
+        "total": 10,
+        "time_seconds": 80.1,
+        "tokens": 38741,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Merged branch feat/merged was deleted locally",
+          "passed": true,
+          "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+        },
+        {
+          "text": "Squash-merged branch feat/squashed was deleted locally",
+          "passed": true,
+          "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+        },
+        {
+          "text": "Landed remote branch origin/feat/merged was deleted",
+          "passed": false,
+          "evidence": "['dev', 'feat/merged', 'main']"
+        },
+        {
+          "text": "Unlanded branch feat/unlanded was kept",
+          "passed": true,
+          "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+        },
+        {
+          "text": "feat/gone (upstream deleted but never merged) was kept",
+          "passed": true,
+          "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+        },
+        {
+          "text": "retain/perf-experiment was kept",
+          "passed": true,
+          "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+        },
+        {
+          "text": "The dirty worktree and its uncommitted wip.py survive",
+          "passed": true,
+          "evidence": "<workspace>/iteration-2/eval-branch-cleanup/without_skill/run-1/fixture/wt-dirty/wip.py"
+        },
+        {
+          "text": "The clean worktree was removed",
+          "passed": true,
+          "evidence": "<workspace>/iteration-2/eval-branch-cleanup/without_skill/run-1/fixture/wt-clean"
+        },
+        {
+          "text": "dev and main were not modified",
+          "passed": true,
+          "evidence": "unchanged"
+        },
+        {
+          "text": "The summary flags feat/gone and feat/unlanded for a human decision",
+          "passed": true,
+          "evidence": "both named"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 122.6,
+        "tokens": 51638,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Resolved correctly: closed with every AC true, left open with the failing AC explained, or closed with it unresolved plus a follow-up task",
+          "passed": true,
+          "evidence": "status=In Progress strips=False flagged=True followup=False"
+        },
+        {
+          "text": "If closed, it was via `quest task complete` (record moved to .quest/completed)",
+          "passed": true,
+          "evidence": "[]"
+        },
+        {
+          "text": "If closed, the final summary cites test evidence; if open, a note records the evidence",
+          "passed": true,
+          "evidence": "Verification 2026-09-27 (claude for jdn): test_slug.test_basic and test_slug.test_commas pass on 9a13a2c (run via python3 import; pytest not installed). AC1 evidenced by slugify('Hello World') == 'hel"
+        },
+        {
+          "text": "AC 'strips all punctuation' is checked only if it is actually true",
+          "passed": true,
+          "evidence": "checked=False slugify('Hello, World!')='{\"schemaVersion\":1,\"contractVersion\":1,\"kind\":\"task.list\",\"data\":[{\"id\":\"DEMO-1\",\"aliases\":[],\"title\":\"Add a slugify helper\",\"status\":\"In Progress\",\"description\":\"URL slugs for titles\",\"acceptanceCriteria\":[{\"index\":0,\"text\":\"slugify lowercases and joins words with hyphens\",\"checked\":true,\"position\":1},{\"index\":1,\"text\":\"slugify strips all punctuation\",\"checked\":false,\"position\":2},{\"index\":2,\"text\":\"unit tests pass\",\"checked\":true,\"position\":3}],\"definiti"
+        },
+        {
+          "text": "lore check exits 0",
+          "passed": true,
+          "evidence": "exit 0"
+        },
+        {
+          "text": "The Story's task table shows the task's real status",
+          "passed": true,
+          "evidence": "| [DEMO-1](../../.quest/tasks/DEMO-1.json) | Add a slugify helper | In Progress |"
+        },
+        {
+          "text": "Tracker and docs changes are committed",
+          "passed": true,
+          "evidence": "clean"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 9,
+        "failed": 0,
+        "total": 9,
+        "time_seconds": 76.3,
+        "tokens": 60746,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "node_modules/ was removed (or kept because no package manifest can regenerate it)",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "dist/ was removed",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "__pycache__/ and .pytest_cache/ were removed",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": ".env survives unchanged",
+          "passed": true,
+          "evidence": "present"
+        },
+        {
+          "text": "Tracked legacy.bak survives",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "parser_v2.py (untracked but imported by main.py) survives",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": ".idea/ (local IDE config, not a build output) survives",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Non-regenerable junk was not permanently deleted (kept, or moved to the Trash)",
+          "passed": true,
+          "evidence": "ok"
+        },
+        {
+          "text": "The report lists the non-regenerable files for the user's decision",
+          "passed": true,
+          "evidence": "['notes-1d70f4.bak', 'scratch-1d70f4.py', 'IMPLEMENTATION_SUMMARY-1d70f4.md']"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 5,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 102.4,
+        "tokens": 48682,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Nothing in the Claude config dir was changed (audit only)",
+          "passed": true,
+          "evidence": "unchanged"
+        },
+        {
+          "text": "Flags the orphaned plugin version",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags the stale in-use markers of dead processes",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags transcripts of a project whose folder is gone (claude project purge)",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags the family of per-repo gh api rulesets rules for consolidation",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags Bash(rm:*) as overly broad",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags the oversized MEMORY.md or CLAUDE.md",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags the superseded memory",
+          "passed": true,
+          "evidence": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 7,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.86,
+        "passed": 6,
+        "failed": 1,
+        "total": 7,
+        "time_seconds": 104.2,
+        "tokens": 39216,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The landed branch was removed",
+          "passed": false,
+          "evidence": ""
+        },
+        {
+          "text": "retain/benchmark-baseline was kept",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "The unlanded experiment branch was kept (not deleted without the user)",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "design-notes.md (untracked real work) was not deleted",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": ".env survives unchanged",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "node_modules handled: removed when a manifest can regenerate it, or kept with that reason when none exists",
+          "passed": true,
+          "evidence": "no manifest in fixture"
+        },
+        {
+          "text": "The report gives a disposition for every leftover (retain branch, experiment, .env, design notes, .idea, .orig)",
+          "passed": true,
+          "evidence": "all accounted"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 7,
+      "configuration": "without_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 83.7,
+        "tokens": 40277,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The landed branch was removed",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "retain/benchmark-baseline was kept",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "The unlanded experiment branch was kept (not deleted without the user)",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "design-notes.md (untracked real work) was not deleted",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": ".env survives unchanged",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "node_modules handled: removed when a manifest can regenerate it, or kept with that reason when none exists",
+          "passed": true,
+          "evidence": "no manifest in fixture"
+        },
+        {
+          "text": "The report gives a disposition for every leftover (retain branch, experiment, .env, design notes, .idea, .orig)",
+          "passed": true,
+          "evidence": "all accounted"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 7,
+      "configuration": "without_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 0.86,
+        "passed": 6,
+        "failed": 1,
+        "total": 7,
+        "time_seconds": 95.8,
+        "tokens": 40125,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The landed branch was removed",
+          "passed": false,
+          "evidence": ""
+        },
+        {
+          "text": "retain/benchmark-baseline was kept",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "The unlanded experiment branch was kept (not deleted without the user)",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "design-notes.md (untracked real work) was not deleted",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": ".env survives unchanged",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "node_modules handled: removed when a manifest can regenerate it, or kept with that reason when none exists",
+          "passed": true,
+          "evidence": "no manifest in fixture"
+        },
+        {
+          "text": "The report gives a disposition for every leftover (retain branch, experiment, .env, design notes, .idea, .orig)",
+          "passed": true,
+          "evidence": "all accounted"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 8,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.67,
+        "passed": 2,
+        "failed": 1,
+        "total": 3,
+        "time_seconds": 64.8,
+        "tokens": 38689,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The orphaned server running in this repo was stopped",
+          "passed": false,
+          "evidence": "['65753']"
+        },
+        {
+          "text": "The decoy server in someone else's project is still running",
+          "passed": true,
+          "evidence": "['65756']"
+        },
+        {
+          "text": "The report names the other project's server as left alone",
+          "passed": true,
+          "evidence": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 8,
+      "configuration": "without_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 46.2,
+        "tokens": 40844,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The orphaned server running in this repo was stopped",
+          "passed": true,
+          "evidence": "stopped"
+        },
+        {
+          "text": "The decoy server in someone else's project is still running",
+          "passed": true,
+          "evidence": "['71430']"
+        },
+        {
+          "text": "The report names the other project's server as left alone",
+          "passed": true,
+          "evidence": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 8,
+      "configuration": "without_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 0.67,
+        "passed": 2,
+        "failed": 1,
+        "total": 3,
+        "time_seconds": 67.1,
+        "tokens": 39703,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The orphaned server running in this repo was stopped",
+          "passed": false,
+          "evidence": "['73150']"
+        },
+        {
+          "text": "The decoy server in someone else's project is still running",
+          "passed": true,
+          "evidence": "['73153']"
+        },
+        {
+          "text": "The report names the other project's server as left alone",
+          "passed": true,
+          "evidence": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 6,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
+        "total": 5,
+        "time_seconds": 66.2,
+        "tokens": 37453,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "All 8 squash-merged branches were deleted (git branch --merged cannot see them)",
+          "passed": false,
+          "evidence": "['feat/T-10-change-0', 'feat/T-11-change-1', 'feat/T-12-change-2', 'feat/T-13-change-3', 'feat/T-14-change-4', 'feat/T-15-change-5', 'feat/T-16-change-6', 'feat/T-17-change-7']"
+        },
+        {
+          "text": "The partially landed branch (one commit never reached dev) was kept",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "The old-looking but unlanded spike branch was kept",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "dev was not modified",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "The report explains the partial branch's unlanded commit",
+          "passed": true,
+          "evidence": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 6,
+      "configuration": "without_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 80.6,
+        "tokens": 37974,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "All 8 squash-merged branches were deleted (git branch --merged cannot see them)",
+          "passed": true,
+          "evidence": "all gone"
+        },
+        {
+          "text": "The partially landed branch (one commit never reached dev) was kept",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "The old-looking but unlanded spike branch was kept",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "dev was not modified",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "The report explains the partial branch's unlanded commit",
+          "passed": true,
+          "evidence": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 6,
+      "configuration": "without_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
+        "total": 5,
+        "time_seconds": 107.8,
+        "tokens": 37051,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "All 8 squash-merged branches were deleted (git branch --merged cannot see them)",
+          "passed": false,
+          "evidence": "['feat/T-10-change-0', 'feat/T-11-change-1', 'feat/T-12-change-2', 'feat/T-13-change-3', 'feat/T-14-change-4', 'feat/T-15-change-5', 'feat/T-16-change-6', 'feat/T-17-change-7']"
+        },
+        {
+          "text": "The partially landed branch (one commit never reached dev) was kept",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "The old-looking but unlanded spike branch was kept",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "dev was not modified",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "The report explains the partial branch's unlanded commit",
+          "passed": true,
+          "evidence": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.88,
+        "passed": 7,
+        "failed": 1,
+        "total": 8,
+        "time_seconds": 106.4,
+        "tokens": 40004,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "No tracked file is left modified or staged",
+          "passed": true,
+          "evidence": "clean"
+        },
+        {
+          "text": "The task branch is pushed (remote tip equals local tip)",
+          "passed": true,
+          "evidence": "a80e19f139000e7b895719b361e68e99d3286b09 vs a80e19f139000e7b895719b361e68e99d3286b09"
+        },
+        {
+          "text": "Nothing was committed to dev or main",
+          "passed": true,
+          "evidence": "dev unchanged"
+        },
+        {
+          "text": "No agent junk (debug.log, *.bak, scratch_test.py, IMPLEMENTATION_SUMMARY.md) was committed",
+          "passed": true,
+          "evidence": "none committed"
+        },
+        {
+          "text": "Parser work and the README edit were committed as separate logical commits",
+          "passed": false,
+          "evidence": "mixed commits: ['a4d51eb46f2c75508dc4e03462e300610a7a0900']"
+        },
+        {
+          "text": "The quest task got a progress note",
+          "passed": true,
+          "evidence": "1 note(s)"
+        },
+        {
+          "text": "The task is still In Progress (a wrap-up is not a completion)",
+          "passed": true,
+          "evidence": "In Progress"
+        },
+        {
+          "text": ".quest changes are committed (tracker travels with the code)",
+          "passed": true,
+          "evidence": "clean"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 0.9857,
+        "stddev": 0.0535,
+        "min": 0.8,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 130.5929,
+        "stddev": 50.2399,
+        "min": 66.4,
+        "max": 229.5
+      },
+      "tokens": {
+        "mean": 62175.1429,
+        "stddev": 17360.5324,
+        "min": 40235,
+        "max": 93911
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.8886,
+        "stddev": 0.1201,
+        "min": 0.67,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 86.0143,
+        "stddev": 21.2554,
+        "min": 46.2,
+        "max": 122.6
+      },
+      "tokens": {
+        "mean": 42224.5,
+        "stddev": 6771.2,
+        "min": 37051,
+        "max": 60746
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.10",
+      "time_seconds": "+44.6",
+      "tokens": "+19951"
+    }
+  },
+  "notes": [
+    "Iteration 2 (Minimal..Immaculate levels, scope axis, 8 cases, 3 runs per config on the 3 new cases): with 98.6% vs without 88.9% (+9.7pp); +58% tokens, +61% time.",
+    "7 of 9 failed assertions are auto-mode classifier blocks (the harness refused a destructive command and the agent correctly stopped): baseline 6 (git branch -D x2, git branch -d/rm x2, kill x2), with-skill 1 (hk apply itself denied). Behavioural failures, baseline only: kept a landed remote branch (conservative), mixed parser+README into one commit.",
+    "Block asymmetry to disclose: the classifier stopped direct commands 6/7 times it saw them in baselines but hk apply only 1/13 times. hk applies proofs, fingerprints, journal/undo, and (since this iteration) the user's deny/ask/soft_deny rules on the equivalent command; users who want the harness to confirm every apply can add an ask rule for Bash(python3 *hk.py apply:*).",
+    "New discriminating cases: squash-estate (8 squash-merged + partial + stale-looking unlanded): all runs that were not blocked deleted exactly the 8; nobody deleted the partial or the spike. immaculate-handover: with-skill 3/3 produced a verified disposition (hk disposition exit 0) for every leftover; baselines listed items but 2/3 were blocked from removing the landed branch. runtime-sandbox: with-skill 3/3 stopped only the repo's orphan via hk; baselines 1/3 (2 blocked by the classifier), none killed the decoy.",
+    "Defects found and fixed during iteration 2: zsh does not word-split  (skills now define a function); hk apply bypassed user permission rules (now enforced); Standard plans hid stale unlanded branches (now reported); scratchpad scan swept non-session dirs; --dry-run created a journal dir; apply printed a journal path when nothing was written; MEMORY.md broken links/unindexed memories were not detected; eval fixtures lacked a package manifest so node_modules was not truly regenerable (grader adjusted to accept keeping it with that reason).",
+    "Harness incident: a unit test's pkill -f matched eval fixture servers and killed them mid-run; that run was quarantined (contaminated-runtime-with-run-1) and rerun; tests and fixtures now use unique --directory paths."
+  ]
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "query": "do a deep clean of this project, it's gotten messy",
+    "should_trigger": true
+  },
+  {
+    "query": "tidy up this repo before I log off",
+    "should_trigger": true
+  },
+  {
+    "query": "time for a deep clean",
+    "should_trigger": true
+  },
+  {
+    "query": "tidy up",
+    "should_trigger": true
+  },
+  {
+    "query": "ok I'm done for the night \u2014 can you wrap everything up so I can pick it up tomorrow? commit whatever's sensible, update the task",
+    "should_trigger": true
+  },
+  {
+    "query": "before I hand this repo to the contractor on monday I want it spotless: no stray branches, no junk files, containers down, the works",
+    "should_trigger": true
+  },
+  {
+    "query": "clean up after yourself please, you left a bunch of stuff lying around in this repo during that refactor",
+    "should_trigger": true
+  },
+  {
+    "query": "PR #212 just merged \ud83c\udf89 close out the branch and tidy up whatever's left from HS-44",
+    "should_trigger": true
+  },
+  {
+    "query": "my laptop is at 4GB free and it's mostly dev junk I think. deep clean what you can but ask before anything scary",
+    "should_trigger": true
+  },
+  {
+    "query": "what's a good .gitignore for a python + node monorepo? we keep committing __pycache__",
+    "should_trigger": false
+  },
+  {
+    "query": "write a bash script that deletes files older than 30 days from /var/log/myapp on our ubuntu servers",
+    "should_trigger": false
+  },
+  {
+    "query": "refactor utils/cleanup.ts so the cleanupExpiredSessions function uses the new repository pattern",
+    "should_trigger": false
+  }
+]

@@ -1,0 +1,50 @@
+# .housekeeping.toml: per-repo settings for housekeeping-skills. Commit it at the repo root.
+# Every key is optional; without the file the engine's built-in defaults apply.
+# Lists under [protect], [junk], [tmp] and [immaculate] EXTEND the built-ins; they never replace them.
+version = 1
+housekeeping_level = "standard"   # minimal | light | standard | deep | immaculate (how much)
+housekeeping_scope = "repo"       # session | repo | machine (where; a level never widens it)
+
+[levels]                      # which level a context infers when the user names none
+checkpoint = "minimal"        # context running out, emergency stop: a recoverable stopping point
+session_end = "light"         # wrap-up, handoff: put away what you just used
+default = "standard"          # a bare "tidy up" / "clean up": the routine checklist
+task_done = "standard"        # task finished / PR merged
+
+[sdlc]                        # auto-detected when omitted (dev if it exists, else origin/HEAD)
+trunk = "dev"                 # integration branch: containment is proven against it
+release = "main"              # release branch: also counts as landed
+merge = "squash"
+remote = "origin"
+
+[protect]                     # never planned for removal, at any level
+branches = ["retain/*", "preserve/*", "archive/*"]
+paths = []                    # repo-relative globs, e.g. ["fixtures/golden/*"]
+containers = ["opum-runner"]  # matched by name in the active Docker context
+images = ["*opum-actions-runner*"]
+
+[junk]                        # extra agent-junk name globs for untracked files
+patterns = []
+
+[tmp]                         # $TMPDIR entries this repo's tests leak
+prefixes = []                 # e.g. ["myrepo-e2e-", "lore-readme-"]
+max_age_days = 2
+
+[stash]
+max_age_days = 30             # older stashes are archived under refs/archive/stash, then dropped (deep)
+
+[branches]
+stale_days = 30               # unlanded branches idle this long are offered for archive-then-delete (deep, S3)
+
+[scratchpad]
+max_age_days = 3              # Claude Code session scratch dirs (deep; other projects' need machine scope)
+
+[provenance]
+enabled = false               # true turns on the capture hook: cleanup can target exactly what sessions created
+
+[immaculate]
+keep = [".env", ".env.local"] # deliberately kept: auto-disposed as "kept: keep-list"
+verify = []                   # final-state checks, e.g. ["npm ci", "npm run build", "npm test"]
+
+[docker]
+projects = []                 # compose project names that belong to this repo (default: the repo dir name)

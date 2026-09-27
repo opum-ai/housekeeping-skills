@@ -1,0 +1,14 @@
+{
+  "name": "housekeeping-skills",
+  "displayName": "Housekeeping Skills",
+  "description": "Project housekeeping for agentic engineering at five levels, Minimal to Immaculate (default Standard), within a session, repo, or machine scope: quest and lore sync, safe git landing and pruning with containment proofs, workspace, runtime and Claude Code harness cleanup, and a verified disposition for every in-scope item at Immaculate, all through a fingerprinted plan/apply engine with safety classes, a journal and undo.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Opum AI",
+    "url": "https://github.com/opum-ai"
+  },
+  "homepage": "https://github.com/opum-ai/housekeeping-skills",
+  "repository": "https://github.com/opum-ai/housekeeping-skills",
+  "license": "MIT",
+  "keywords": ["housekeeping", "cleanup", "git", "worktrees", "docker", "claude-code", "quest", "lore", "sdd", "agentic-engineering"]
+}

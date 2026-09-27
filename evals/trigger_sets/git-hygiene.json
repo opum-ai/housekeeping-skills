@@ -1,0 +1,34 @@
+[
+  {
+    "query": "git branch shows like 60 branches, most are merged prs from months ago. prune the dead ones but don't lose anything",
+    "should_trigger": true
+  },
+  {
+    "query": "we squash merge everything so git branch --merged is useless. which of my local branches are actually safe to delete?",
+    "should_trigger": true
+  },
+  {
+    "query": "commit this work in sensible chunks and push it, then open a PR against dev",
+    "should_trigger": true
+  },
+  {
+    "query": "promote dev to main for the 0.4.0 release",
+    "should_trigger": true
+  },
+  {
+    "query": "there are a bunch of worktrees under .claude/worktrees from old agent runs, clean those up",
+    "should_trigger": true
+  },
+  {
+    "query": "explain the difference between git rebase and git merge with a diagram",
+    "should_trigger": false
+  },
+  {
+    "query": "I accidentally committed my .env with the stripe key 3 commits ago, how do I get it out of history on github?",
+    "should_trigger": false
+  },
+  {
+    "query": "set up a github action that runs pytest on every push to dev",
+    "should_trigger": false
+  }
+]

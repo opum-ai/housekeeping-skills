@@ -1,0 +1,60 @@
+{
+  "expectations": [
+    {
+      "text": "Merged branch feat/merged was deleted locally",
+      "passed": true,
+      "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+    },
+    {
+      "text": "Squash-merged branch feat/squashed was deleted locally",
+      "passed": true,
+      "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+    },
+    {
+      "text": "Landed remote branch origin/feat/merged was deleted",
+      "passed": true,
+      "evidence": "['dev', 'main']"
+    },
+    {
+      "text": "Unlanded branch feat/unlanded was kept",
+      "passed": true,
+      "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+    },
+    {
+      "text": "feat/gone (upstream deleted but never merged) was kept",
+      "passed": true,
+      "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+    },
+    {
+      "text": "retain/perf-experiment was kept",
+      "passed": true,
+      "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+    },
+    {
+      "text": "The dirty worktree and its uncommitted wip.py survive",
+      "passed": true,
+      "evidence": "<workspace>/iteration-1/eval-branch-cleanup/with_skill/run-1/fixture/wt-dirty/wip.py"
+    },
+    {
+      "text": "The clean worktree was removed",
+      "passed": true,
+      "evidence": "<workspace>/iteration-1/eval-branch-cleanup/with_skill/run-1/fixture/wt-clean"
+    },
+    {
+      "text": "dev and main were not modified",
+      "passed": true,
+      "evidence": "unchanged"
+    },
+    {
+      "text": "The summary flags feat/gone and feat/unlanded for a human decision",
+      "passed": true,
+      "evidence": "both named"
+    }
+  ],
+  "summary": {
+    "passed": 10,
+    "failed": 0,
+    "total": 10,
+    "pass_rate": 1.0
+  }
+}

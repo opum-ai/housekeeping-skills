@@ -1,0 +1,35 @@
+{
+  "expectations": [
+    {
+      "text": "All 8 squash-merged branches were deleted (git branch --merged cannot see them)",
+      "passed": true,
+      "evidence": "all gone"
+    },
+    {
+      "text": "The partially landed branch (one commit never reached dev) was kept",
+      "passed": true,
+      "evidence": ""
+    },
+    {
+      "text": "The old-looking but unlanded spike branch was kept",
+      "passed": true,
+      "evidence": ""
+    },
+    {
+      "text": "dev was not modified",
+      "passed": true,
+      "evidence": ""
+    },
+    {
+      "text": "The report explains the partial branch's unlanded commit",
+      "passed": true,
+      "evidence": ""
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5,
+    "pass_rate": 1.0
+  }
+}

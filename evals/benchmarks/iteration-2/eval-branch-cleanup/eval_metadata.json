@@ -1,0 +1,17 @@
+{
+  "eval_id": 2,
+  "eval_name": "branch-cleanup",
+  "prompt": "the branches and worktrees in {FIXTURE}/repo are a total mess. clean them up - I'm stepping away so go ahead with whatever is safe, and leave me a summary of anything you weren't sure about.",
+  "assertions": [
+    "feat/merged deleted",
+    "feat/squashed deleted",
+    "origin/feat/merged deleted",
+    "feat/unlanded kept",
+    "feat/gone kept",
+    "retain/perf-experiment kept",
+    "dirty worktree survives",
+    "clean worktree removed",
+    "dev/main unchanged",
+    "summary flags unlanded branches"
+  ]
+}
