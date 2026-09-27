@@ -47,6 +47,7 @@ Classifications:
 | h | anthropics/claude-code | commit-commands `/clean_gone` | Deletes unmerged branches and dirty worktrees on `[gone]` alone | Defect |
 | i | anthropics (skill-creator) | skill-creator `scripts/run_eval.py` | Parallel workers share one `.claude/commands/`, so each run sees N copies of the skill and a trigger counts only when Claude picks its own copy (~1/N) | Defect |
 | j | quest-cli | quest 0.11.0 | After `task demote` and checking every criterion, `task complete` keeps and re-warns the stale `unresolvedAtCompletion` from the earlier completion | Defect |
+| k | opum-fleet (opum-sdlc) | opum-workflow 0.10.8 | With `delete_branch_on_merge` on and no trunk ruleset, the dev->main promotion PR is recorded MERGED after `git push origin origin/dev:main`, and GitHub deletes the head branch: `dev` itself | Missing capability |
 
 ### (a) `lore link` half-writes on failure and strips the schema modeline
 
@@ -346,4 +347,27 @@ be recomputed (here, to empty), or cleared on demote.
 
 Workaround: none without editing `.quest/` by hand, which the workspace rules forbid. A note
 on the task records that the stale field is known.
+
+### (k) The promotion PR deletes `dev` on a repo without trunk protection
+
+- **Owner:** opum-fleet (the `opum-sdlc` skill and its repo-bootstrap guidance).
+  **Tool:** opum-workflow 0.10.8. **Observed:** 2026-09-27, opum-ai/housekeeping-skills.
+- **Classification:** missing capability. `opum-sdlc` asks for `delete_branch_on_merge` and
+  for a dev->main promotion PR, but nothing in the bootstrap guidance requires a ruleset that
+  stops trunk branches from being deleted. **Workflow step:** the first promotion of a newly
+  created repository.
+
+Minimal repro:
+1. Create a repository with `delete_branch_on_merge=true` and no ruleset on `dev`/`main`.
+2. Open a PR from `dev` to `main`, then run `git push origin origin/dev:main`, as
+   `references/promotion.md` prescribes.
+3. GitHub records the PR as MERGED and deletes its head branch. `git ls-remote` shows only
+   `main`.
+
+Observed: `refs/heads/dev` was gone. It was restored at the identical SHA through the refs
+API, and a "protect trunk branches" ruleset (deletion + non_fast_forward on dev and main,
+mirroring opum-ai/test-skills) was added.
+
+What should happen: the bootstrap checklist (and `sdlc-audit`'s settings check) should
+require that ruleset before, or together with, `delete_branch_on_merge`.
 
