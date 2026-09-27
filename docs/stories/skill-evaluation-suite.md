@@ -10,7 +10,7 @@ tasks:
 generated:
   by: lore/0.9.3
   at: 2026-09-27T03:24:32.544Z
-lore_task_status: in-progress
+lore_task_status: done
 ---
 
 # Skill evaluation suite
@@ -31,7 +31,7 @@ Prove each skill improves outcomes over no skill, triggers on the right requests
 <!-- lore:tasks:begin -->
 | Task | Title | Status |
 |---|---|---|
-| [HS-11](../../.quest/tasks/HS-11.json) | Evaluation suite: fixtures, task evals with and without skills, trigger sets, benchmark | In Progress |
+| [HS-11](../../.quest/completed/HS-11.json) | Evaluation suite: fixtures, task evals with and without skills, trigger sets, benchmark | Done |
 <!-- lore:tasks:end -->
 
 ## Notes

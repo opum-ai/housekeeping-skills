@@ -11,7 +11,7 @@ tasks:
 generated:
   by: lore/0.9.3
   at: 2026-09-27T03:24:31.922Z
-lore_task_status: in-progress
+lore_task_status: done
 ---
 
 # hk plan-apply engine
@@ -33,7 +33,7 @@ Give every skill one deterministic engine for inventory, classification, plannin
 <!-- lore:tasks:begin -->
 | Task | Title | Status |
 |---|---|---|
-| [HS-3](../../.quest/tasks/HS-3.json) | hk engine: inventory, classify, plan, apply, journal, undo (stdlib Python 3.9+) | In Progress |
+| [HS-3](../../.quest/completed/HS-3.json) | hk engine: inventory, classify, plan, apply, journal, undo (stdlib Python 3.9+) | Done |
 <!-- lore:tasks:end -->
 
 ## Notes

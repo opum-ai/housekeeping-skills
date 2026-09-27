@@ -11,7 +11,7 @@ tasks:
 generated:
   by: lore/0.9.3
   at: 2026-09-27T03:24:32.310Z
-lore_task_status: in-progress
+lore_task_status: done
 ---
 
 # runtime-clean skill
@@ -31,7 +31,7 @@ Stop and remove the processes, servers and containers the work started, without 
 <!-- lore:tasks:begin -->
 | Task | Title | Status |
 |---|---|---|
-| [HS-8](../../.quest/tasks/HS-8.json) | runtime-clean skill: containers, images, volumes, networks, orphaned processes, ports, background tasks | In Progress |
+| [HS-8](../../.quest/completed/HS-8.json) | runtime-clean skill: containers, images, volumes, networks, orphaned processes, ports, background tasks | Done |
 <!-- lore:tasks:end -->
 
 ## Notes

@@ -11,7 +11,7 @@ tasks:
 generated:
   by: lore/0.9.3
   at: 2026-09-27T03:24:32.154Z
-lore_task_status: in-progress
+lore_task_status: done
 ---
 
 # session-sync skill
@@ -31,7 +31,7 @@ Make the tracker and docs tell the truth about what the session did, before anyt
 <!-- lore:tasks:begin -->
 | Task | Title | Status |
 |---|---|---|
-| [HS-6](../../.quest/tasks/HS-6.json) | session-sync skill: reconcile quest tasks and lore docs with what the session did, including two-way spec drift | In Progress |
+| [HS-6](../../.quest/completed/HS-6.json) | session-sync skill: reconcile quest tasks and lore docs with what the session did, including two-way spec drift | Done |
 <!-- lore:tasks:end -->
 
 ## Notes

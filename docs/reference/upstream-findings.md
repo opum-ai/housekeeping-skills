@@ -46,6 +46,7 @@ Classifications:
 | g | opum-fleet | opum-workflow plugin | `.claude/handovers/` files accumulate without pruning | Missing capability |
 | h | anthropics/claude-code | commit-commands `/clean_gone` | Deletes unmerged branches and dirty worktrees on `[gone]` alone | Defect |
 | i | anthropics (skill-creator) | skill-creator `scripts/run_eval.py` | Parallel workers share one `.claude/commands/`, so each run sees N copies of the skill and a trigger counts only when Claude picks its own copy (~1/N) | Defect |
+| j | quest-cli | quest 0.11.0 | After `task demote` and checking every criterion, `task complete` keeps and re-warns the stale `unresolvedAtCompletion` from the earlier completion | Defect |
 
 ### (a) `lore link` half-writes on failure and strips the schema modeline
 
@@ -320,4 +321,29 @@ skills.
 
 Suggested fix: give each `run_single_query` a private project root (a temporary directory
 containing `.claude/commands/`), or run the workers serially.
+
+### (j) `unresolvedAtCompletion` is not recomputed after demote and re-complete
+
+- **Owner:** quest-cli. **Tool:** quest 0.11.0.
+- **Classification:** defect. **Workflow step:** the task-finalization repair path (close,
+  notice unchecked criteria, demote, check, complete).
+
+Minimal repro:
+1. Create a task with 4 acceptance criteria and start it.
+2. Run `quest task complete <id>` with the criteria unchecked. The warning is correct, and
+   `unresolvedAtCompletion` lists all 4.
+3. Run `quest task demote <id> --to "In Progress"`, then
+   `quest task edit <id> --check-ac 1 --check-ac 2 --check-ac 3 --check-ac 4`.
+4. Run `quest task complete <id>`.
+
+Observed (exit 0): stderr still says "4 of 4 unchecked", quoting the criteria's text from
+before the edit, and `data.unresolvedAtCompletion` still holds the old list. At the same
+time, `acceptanceCriteria[].checked` is `true` for all four.
+
+What should happen: according to `quest instructions task-finalization`, unresolved items
+are those left unchecked at completion. The second completion has none, so the field should
+be recomputed (here, to empty), or cleared on demote.
+
+Workaround: none without editing `.quest/` by hand, which the workspace rules forbid. A note
+on the task records that the stale field is known.
 

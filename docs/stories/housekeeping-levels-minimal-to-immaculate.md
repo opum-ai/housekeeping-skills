@@ -12,7 +12,7 @@ tasks:
 generated:
   by: lore/0.11.0
   at: 2026-09-27T14:06:12.178Z
-lore_task_status: in-progress
+lore_task_status: done
 ---
 
 # Housekeeping levels Minimal to Immaculate
@@ -33,7 +33,7 @@ Replace the C1-C5 draft levels with Minimal, Light, Standard (default), Deep and
 <!-- lore:tasks:begin -->
 | Task | Title | Status |
 |---|---|---|
-| [HS-13](../../.quest/tasks/HS-13.json) | Adopt Minimal..Immaculate housekeeping levels with a separate scope axis | In Progress |
+| [HS-13](../../.quest/completed/HS-13.json) | Adopt Minimal..Immaculate housekeeping levels with a separate scope axis | Done |
 <!-- lore:tasks:end -->
 
 ## Notes

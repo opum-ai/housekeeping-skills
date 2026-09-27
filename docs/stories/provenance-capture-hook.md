@@ -11,7 +11,7 @@ tasks:
 generated:
   by: lore/0.9.3
   at: 2026-09-27T03:24:32.466Z
-lore_task_status: in-progress
+lore_task_status: done
 ---
 
 # Provenance capture hook
@@ -31,7 +31,7 @@ Record what the session creates, cheaply and without ever blocking, so cleanup c
 <!-- lore:tasks:begin -->
 | Task | Title | Status |
 |---|---|---|
-| [HS-10](../../.quest/tasks/HS-10.json) | Opt-in provenance capture hook (fail-open) feeding the hk ledger | In Progress |
+| [HS-10](../../.quest/completed/HS-10.json) | Opt-in provenance capture hook (fail-open) feeding the hk ledger | Done |
 <!-- lore:tasks:end -->
 
 ## Notes

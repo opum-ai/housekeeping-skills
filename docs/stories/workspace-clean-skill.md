@@ -11,7 +11,7 @@ tasks:
 generated:
   by: lore/0.9.3
   at: 2026-09-27T03:24:32.232Z
-lore_task_status: in-progress
+lore_task_status: done
 ---
 
 # workspace-clean skill
@@ -31,7 +31,7 @@ Clear files the work left behind, from this session's junk up to regenerable bui
 <!-- lore:tasks:begin -->
 | Task | Title | Status |
 |---|---|---|
-| [HS-7](../../.quest/tasks/HS-7.json) | workspace-clean skill: agent junk, temp dirs, build outputs, dependency dirs, and caches | In Progress |
+| [HS-7](../../.quest/completed/HS-7.json) | workspace-clean skill: agent junk, temp dirs, build outputs, dependency dirs, and caches | Done |
 <!-- lore:tasks:end -->
 
 ## Notes

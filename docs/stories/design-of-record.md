@@ -11,7 +11,7 @@ tasks:
 generated:
   by: lore/0.9.3
   at: 2026-09-27T03:24:32.623Z
-lore_task_status: in-progress
+lore_task_status: done
 ---
 
 # Design of record
@@ -33,7 +33,7 @@ Fix the plugin's design in reviewed docs before code lands, so every skill and t
 <!-- lore:tasks:begin -->
 | Task | Title | Status |
 |---|---|---|
-| [HS-2](../../.quest/tasks/HS-2.json) | Research and design of record: state of the art, cleanliness-level spec, ADRs | In Progress |
+| [HS-2](../../.quest/completed/HS-2.json) | Research and design of record: state of the art, cleanliness-level spec, ADRs | Done |
 <!-- lore:tasks:end -->
 
 ## Notes

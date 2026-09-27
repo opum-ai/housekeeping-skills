@@ -11,7 +11,7 @@ tasks:
 generated:
   by: lore/0.9.3
   at: 2026-09-27T03:24:32.000Z
-lore_task_status: in-progress
+lore_task_status: done
 ---
 
 # tidy orchestrator skill
@@ -31,7 +31,7 @@ One entry point that picks a housekeeping level and scope, runs survey, record, 
 <!-- lore:tasks:begin -->
 | Task | Title | Status |
 |---|---|---|
-| [HS-4](../../.quest/tasks/HS-4.json) | Orchestrator skill: pick a housekeeping level and scope, run record, land, clear, verify, and report | In Progress |
+| [HS-4](../../.quest/completed/HS-4.json) | Orchestrator skill: pick a housekeeping level and scope, run record, land, clear, verify, and report | Done |
 <!-- lore:tasks:end -->
 
 ## Notes

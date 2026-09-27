@@ -10,7 +10,7 @@ tasks:
 generated:
   by: lore/0.9.3
   at: 2026-09-27T03:24:32.699Z
-lore_task_status: in-progress
+lore_task_status: done
 ---
 
 # Plugin packaging
@@ -30,7 +30,7 @@ Ship the plugin so it installs cleanly, documents itself, and is listed in the m
 <!-- lore:tasks:begin -->
 | Task | Title | Status |
 |---|---|---|
-| [HS-12](../../.quest/tasks/HS-12.json) | Package the plugin: plugin.json, README, .housekeeping.toml example, marketplace entry | In Progress |
+| [HS-12](../../.quest/completed/HS-12.json) | Package the plugin: plugin.json, README, .housekeeping.toml example, marketplace entry | Done |
 <!-- lore:tasks:end -->
 
 ## Notes
