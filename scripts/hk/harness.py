@@ -54,13 +54,13 @@ def collect_plugin_cache(sizes: bool = True) -> List[Item]:
                     (live if _pid_alive(int(name)) else dead).append(os.path.join(in_use, name))
         rel = os.path.relpath(ver_dir, cache)
         if dead:
-            items.append(Item(domain="harness", kind="plugin.stale-in-use", target=in_use, level="C4", cls="S2",
+            items.append(Item(domain="harness", kind="plugin.stale-in-use", target=in_use, level="deep", scope="machine", cls="S2",
                               op="rm-files", args={"files": dead, "pid_markers": True}, provenance="attributed",
                               fingerprint={"count": len(dead)},
                               reason=f"{len(dead)} in-use marker(s) for dead processes on {rel} (can pin an outdated plugin version)",
                               undo="none needed: Claude Code rewrites markers for live sessions"))
         if os.path.exists(os.path.join(ver_dir, ".orphaned_at")):
-            items.append(Item(domain="harness", kind="plugin.orphaned-version", target=ver_dir, level="C4", cls="S2",
+            items.append(Item(domain="harness", kind="plugin.orphaned-version", target=ver_dir, level="deep", scope="machine", cls="S2",
                               op="rm", provenance="attributed", size=disk_usage(ver_dir) if sizes else None,
                               fingerprint=file_fingerprint(ver_dir),
                               protected=("a live session still uses it" if live else None),
@@ -112,7 +112,7 @@ def collect_projects(sizes: bool = True) -> List[Item]:
             op, args = "trash", {}
             undo = "restore from the Trash"
         items.append(Item(domain="harness", kind="project.missing-path", target=(cwd if op == "cmd" else full),
-                          level="C4", cls="S3", op=op, args=args, provenance="attributed",
+                          level="deep", scope="machine", cls="S3", op=op, args=args, provenance="attributed",
                           size=disk_usage(full) if sizes else None,
                           fingerprint=({"exists": False} if op == "cmd" else file_fingerprint(full)),
                           evidence=[f"transcripts in {full}", f"project path {cwd} no longer exists"],
@@ -139,7 +139,8 @@ def collect_context(root: str, slugs: List[str]) -> List[Item]:
     for path, limit in checks:
         n = _lines(path)
         if n > limit:
-            items.append(Item(domain="harness", kind="context.large-file", target=path, level="C4", cls="S0",
+            items.append(Item(domain="harness", kind="context.large-file", target=path, level="deep",
+                              scope="machine" if path.startswith(claude_home() + os.sep) and "/projects/" not in path else "repo", cls="S0",
                               op="report", size=os.path.getsize(path), provenance="attributed",
                               reason=f"{n} lines loaded into every session (guide: <= {limit}); move detail into skills or linked files",
                               evidence=[f"{n} lines"]))
@@ -153,7 +154,7 @@ def collect_context(root: str, slugs: List[str]) -> List[Item]:
             except OSError:
                 continue
             if re.search(r"\b(superseded|obsolete|no longer (true|applies)|deprecated)\b", text, re.I):
-                items.append(Item(domain="harness", kind="memory.superseded", target=mf, level="C4", cls="S0",
+                items.append(Item(domain="harness", kind="memory.superseded", target=mf, level="deep", cls="S0",
                                   op="report", provenance="attributed",
                                   reason="memory marks itself superseded: fold it into its successor or delete it (with the user)"))
     return items
@@ -192,13 +193,15 @@ def collect_settings(root: str) -> List[Item]:
             bad.update(members)
             flagged.append(f"{len(members)} rules differ only in one argument ({fam}): likely one rollout, consolidate or drop")
         if flagged:
-            items.append(Item(domain="harness", kind="settings.permission-rules", target=f, level="C4", cls="S0",
+            items.append(Item(domain="harness", kind="settings.permission-rules", target=f, level="deep",
+                              scope="machine" if f.startswith(claude_home() + os.sep) else "repo", cls="S0",
                               op="report", provenance="attributed", evidence=flagged[:40],
                               reason=f"{len(bad)} of {len(allow)} allow rules look one-off, stale, or too broad"))
         hooks = data.get("hooks") or {}
         n_hooks = sum(len(m.get("hooks", [])) for ev in hooks.values() if isinstance(ev, list) for m in ev if isinstance(m, dict))
         if n_hooks > 10:
-            items.append(Item(domain="harness", kind="settings.many-hooks", target=f, level="C4", cls="S0", op="report",
+            items.append(Item(domain="harness", kind="settings.many-hooks", target=f, level="deep",
+                              scope="machine" if f.startswith(claude_home() + os.sep) else "repo", cls="S0", op="report",
                               provenance="attributed", reason=f"{n_hooks} hooks configured: review with /hooks for slow or redundant ones"))
     return items
 
@@ -238,7 +241,7 @@ def collect_duplicate_skills(root: str) -> List[Item]:
                 name = os.path.basename(os.path.dirname(sk))
                 if name in local:
                     items.append(Item(domain="harness", kind="skills.duplicate", target=os.path.join(root, ".claude", "skills", name),
-                                      level="C4", cls="S0", op="report", provenance="attributed",
+                                      level="deep", cls="S0", op="report", provenance="attributed",
                                       reason=f"skill {name!r} is listed twice: repo copy and plugin {key} (both cost context)"))
     return items
 
@@ -262,12 +265,12 @@ def collect_caches(sizes: bool = True) -> List[Item]:
         path = next((os.path.expanduser(p) for p in probes if os.path.isdir(os.path.expanduser(p))), None)
         if not path or not have(argv[0]):
             continue
-        items.append(Item(domain="caches", kind="cache.global", target=path, level="C5", cls="S2", op="cmd",
+        items.append(Item(domain="caches", kind="cache.global", target=path, level="deep", scope="machine", cls="S2", op="cmd",
                           args={"argv": argv}, provenance="unknown", size=disk_usage(path, timeout=90) if sizes else None,
                           reason=f"{name} cache, pruned with its own command", undo="re-downloaded on the next install"))
     dd = os.path.expanduser("~/Library/Developer/Xcode/DerivedData")
     if os.path.isdir(dd) and os.listdir(dd):
-        items.append(Item(domain="caches", kind="cache.xcode", target=dd, level="C5", cls="S2", op="rm-children",
+        items.append(Item(domain="caches", kind="cache.xcode", target=dd, level="deep", scope="machine", cls="S2", op="rm-children",
                           args={"path": dd}, provenance="unknown", size=disk_usage(dd, timeout=90) if sizes else None,
                           reason="Xcode DerivedData", undo="rebuilt by Xcode on the next build"))
     return items

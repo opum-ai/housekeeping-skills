@@ -16,7 +16,10 @@ CONFIG_NAME = ".housekeeping.toml"
 
 DEFAULTS: Dict[str, Any] = {
     "version": 1,
-    "levels": {"default": "C2", "session_end": "C1", "task_done": "C3"},
+    "housekeeping_level": "standard",  # minimal | light | standard | deep | immaculate
+    "housekeeping_scope": "repo",  # session | repo | machine
+    # Context -> level, for when the user names no level.
+    "levels": {"checkpoint": "minimal", "session_end": "light", "default": "standard", "task_done": "standard"},
     "sdlc": {"trunk": "", "release": "", "merge": "squash", "remote": "origin"},
     "protect": {
         "branches": ["retain/*", "preserve/*", "archive/*"],
@@ -30,7 +33,9 @@ DEFAULTS: Dict[str, Any] = {
     "branches": {"stale_days": 30},
     "scratchpad": {"max_age_days": 3},
     "provenance": {"enabled": False},
-    "cleanroom": {"keep": [".env", ".env.local"], "verify": []},
+    # Immaculate: files that are deliberately kept (they get the disposition "kept: keep-list"),
+    # and the commands that verify the final state (e.g. a from-scratch build and test).
+    "immaculate": {"keep": [".env", ".env.local"], "verify": []},
     "docker": {"projects": []},
 }
 

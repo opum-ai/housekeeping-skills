@@ -258,7 +258,7 @@ def collect(repo: Repo, ledger: dict, now: Optional[float] = None, fetch: bool =
             items.append(
                 Item(
                     kind="branch.landed",
-                    level="C3",
+                    level="standard",
                     cls="S1",
                     op="git-branch-delete",
                     reason=f"landed: {proofs[0]}",
@@ -275,7 +275,7 @@ def collect(repo: Repo, ledger: dict, now: Optional[float] = None, fetch: bool =
         evidence.append(f"{uniq} commit(s) not in {targets[0] if targets else 'any integration branch'}")
         if why_protected:
             items.append(
-                Item(kind="branch.unlanded", level="C1", cls="S0", op="report",
+                Item(kind="branch.unlanded", level="minimal", cls="S0", op="report",
                      reason=f"unlanded, kept: {why_protected}", evidence=evidence, fingerprint=fp,
                      protected=why_protected, **base)
             )
@@ -283,7 +283,7 @@ def collect(repo: Repo, ledger: dict, now: Optional[float] = None, fetch: bool =
             items.append(
                 Item(
                     kind="branch.stale-unlanded",
-                    level="C4",
+                    level="deep",
                     cls="S3",
                     op="git-archive-branch",
                     reason=f"UNLANDED work, idle {age:.0f} days: archive ref first, then delete (confirm by name)",
@@ -296,7 +296,7 @@ def collect(repo: Repo, ledger: dict, now: Optional[float] = None, fetch: bool =
             )
         else:
             items.append(
-                Item(kind="branch.unlanded", level="C3", cls="S0", op="report",
+                Item(kind="branch.unlanded", level="standard", cls="S0", op="report",
                      reason="UNLANDED work: land it or record why it is dropped", evidence=evidence,
                      fingerprint=fp, **base)
             )
@@ -316,14 +316,14 @@ def collect(repo: Repo, ledger: dict, now: Optional[float] = None, fetch: bool =
             proofs = prove_landed(repo, name, tip, targets, prs)
             if proofs:
                 items.append(
-                    Item(kind="remote-branch.landed", level="C3", cls="S1", op="git-push-delete",
+                    Item(kind="remote-branch.landed", level="standard", cls="S1", op="git-push-delete",
                          reason=f"remote branch landed: {proofs[0]}", args={"remote": r, "name": name},
                          undo=f"git push {r} {tip}:refs/heads/{name}", evidence=proofs,
                          fingerprint={"tip": tip}, protected=(f"reserved prefix {g}" if g else None), **base)
                 )
             else:
                 items.append(
-                    Item(kind="remote-branch.unlanded", level="C3", cls="S0", op="report",
+                    Item(kind="remote-branch.unlanded", level="standard", cls="S0", op="report",
                          reason="remote branch with unlanded commits (not ours to delete)", fingerprint={"tip": tip}, **base)
                 )
 
@@ -337,14 +337,14 @@ def collect(repo: Repo, ledger: dict, now: Optional[float] = None, fetch: bool =
         base = dict(domain="git", target=path, provenance=prov)
         if wt.get("prunable"):
             items.append(
-                Item(kind="worktree.prunable", level="C3", cls="S1", op="git-worktree-prune",
+                Item(kind="worktree.prunable", level="standard", cls="S1", op="git-worktree-prune",
                      reason=f"worktree metadata for a missing directory ({wt['prunable']})",
                      undo="none needed: the directory is already gone", fingerprint={"exists": False}, **base)
             )
             continue
         if wt.get("locked"):
             items.append(
-                Item(kind="worktree.locked", level="C3", cls="S0", op="report",
+                Item(kind="worktree.locked", level="deep", cls="S0", op="report",
                      reason=f"locked worktree ({wt['locked']}): unlock deliberately if it is done", **base)
             )
             continue
@@ -352,14 +352,16 @@ def collect(repo: Repo, ledger: dict, now: Optional[float] = None, fetch: bool =
         fp = {"head": wt.get("head"), "dirty": dirty}
         if dirty:
             items.append(
-                Item(kind="worktree.dirty", level="C2", cls="S0", op="report",
+                Item(kind="worktree.dirty", level="light", cls="S0", op="report",
                      reason=f"{dirty} uncommitted change(s): work hides here, land it first",
                      fingerprint=fp, **base)
             )
             continue
         branch = wt.get("branch")
         landed = bool(branch) and bool(targets) and bool(prove_landed(repo, branch, wt.get("head", ""), targets, prs))
-        level = "C2" if prov == "ledger" else "C3"
+        # Session-made: put away at light. A landed branch's worktree is a known disposable (standard);
+        # any other clean worktree is one of "the places routine housekeeping misses" (deep).
+        level = "light" if prov == "ledger" else ("standard" if landed else "deep")
         items.append(
             Item(kind="worktree.clean", level=level, cls="S1", op="git-worktree-remove",
                  reason=("clean worktree of a landed branch" if landed else "clean worktree; its branch and commits stay"),
@@ -378,12 +380,12 @@ def collect(repo: Repo, ledger: dict, now: Optional[float] = None, fetch: bool =
         base = dict(domain="git", target=f"stash {sha[:12]}", provenance="unknown", age_days=age, fingerprint={"sha": sha})
         if age >= max_age:
             items.append(
-                Item(kind="stash.old", level="C4", cls="S1", op="git-stash-archive-drop",
+                Item(kind="stash.old", level="deep", cls="S1", op="git-stash-archive-drop",
                      reason=f"stash idle {age:.0f} days ({subj[:60]}): keep it under refs/archive, then drop",
                      args={"sha": sha, "message": subj}, undo=f"git stash store -m {json.dumps(subj)} {sha}", **base)
             )
         else:
-            items.append(Item(kind="stash.recent", level="C2", cls="S0", op="report",
+            items.append(Item(kind="stash.recent", level="light", cls="S0", op="report",
                               reason=f"stash to review: {ref} {subj[:60]}", **base))
     return items
 

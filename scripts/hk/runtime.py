@@ -112,16 +112,17 @@ def collect_docker(root: str, cfg: dict, ledger: dict, notes: List[str]) -> List
                     evidence=[f"name {names}", f"image {image}", f"compose project {proj or '-'}"])
         if state == "running":
             if prov in ("ledger", "attributed"):
-                items.append(Item(kind="container.running", level="C2" if prov == "ledger" else "C3", cls="S1",
+                items.append(Item(kind="container.running", level="light" if prov == "ledger" else "standard", cls="S1",
                                   op="docker-stop", args={"id": cid}, undo=f"docker start {cid[:12]}",
                                   reason=f"running container {names} started for this {'session' if prov == 'ledger' else 'project'}",
                                   **base))
             else:
-                items.append(Item(kind="container.running-foreign", level="C4", cls="S0", op="report",
+                items.append(Item(kind="container.running-foreign", level="deep", scope="machine", cls="S0", op="report",
                                   reason=f"running container {names} not attributable to this repo", **base))
         else:
-            level = "C3" if prov in ("ledger", "attributed") else "C5"
-            items.append(Item(kind="container.stopped", level=level, cls="S2", op="docker-rm", args={"id": cid},
+            mine = prov in ("ledger", "attributed")
+            items.append(Item(kind="container.stopped", level="standard" if mine else "deep",
+                              scope="repo" if mine else "machine", cls="S2", op="docker-rm", args={"id": cid},
                               undo="recreate it (e.g. docker compose up); its writable layer is not recoverable",
                               reason=f"{state} container {names}", **base))
 
@@ -135,7 +136,7 @@ def collect_docker(root: str, cfg: dict, ledger: dict, notes: List[str]) -> List
         is_proj = any(repo_ == p or repo_.startswith(p + "-") or repo_.startswith(p + "_") for p in projects)
         dangling = repo_ == "<none>"
         items.append(Item(domain="runtime", kind="image.dangling" if dangling else "image.unused",
-                          target=(iid.split(":")[-1][:12]), level="C4" if is_proj else "C5", cls="S2", op="docker-rmi",
+                          target=(iid.split(":")[-1][:12]), level="deep", scope="repo" if is_proj else "machine", cls="S2", op="docker-rmi",
                           args={"id": iid}, provenance="attributed" if is_proj else "unknown",
                           size=_size_bytes(im.get("Size", "")), protected=prot, fingerprint={"id": iid},
                           undo=f"docker pull / rebuild {ref}", reason=f"image {ref} not used by any container"))
@@ -145,7 +146,7 @@ def collect_docker(root: str, cfg: dict, ledger: dict, notes: List[str]) -> List
         labels = _labels(v.get("Labels", ""))
         proj = labels.get("com.docker.compose.project", "")
         if proj in projects:
-            items.append(Item(domain="runtime", kind="volume.project", target=name, level="C4", cls="S3",
+            items.append(Item(domain="runtime", kind="volume.project", target=name, level="deep", cls="S3",
                               op="docker-volume-rm", args={"name": name}, provenance="attributed",
                               fingerprint={"name": name}, undo="none: volume data is gone",
                               reason=f"volume of compose project {proj}: may hold a database; confirm by name"))
@@ -154,7 +155,7 @@ def collect_docker(root: str, cfg: dict, ledger: dict, notes: List[str]) -> List
     for name in dangling_v:
         if name in have_v:
             continue
-        items.append(Item(domain="runtime", kind="volume.dangling", target=name, level="C5", cls="S3",
+        items.append(Item(domain="runtime", kind="volume.dangling", target=name, level="deep", scope="machine", cls="S3",
                           op="docker-volume-rm", args={"name": name}, provenance="unknown",
                           fingerprint={"name": name}, undo="none: volume data is gone",
                           reason="dangling volume (no container references it): confirm by name"))
@@ -162,14 +163,14 @@ def collect_docker(root: str, cfg: dict, ledger: dict, notes: List[str]) -> List
     for n in _docker_json(["network", "ls", "--format", "{{json .}}"]):
         labels = _labels(n.get("Labels", ""))
         if labels.get("com.docker.compose.project", "") in projects and n.get("Name") not in ("bridge", "host", "none"):
-            items.append(Item(domain="runtime", kind="network.project", target=n.get("Name", ""), level="C4", cls="S1",
+            items.append(Item(domain="runtime", kind="network.project", target=n.get("Name", ""), level="deep", cls="S1",
                               op="docker-network-rm", args={"name": n.get("Name")}, provenance="attributed",
                               fingerprint={"id": n.get("ID")}, undo="docker compose up recreates it",
                               reason="network of this compose project"))
 
     for row in _docker_json(["system", "df", "--format", "{{json .}}"]):
         if row.get("Type") == "Build Cache" and _size_bytes(row.get("Reclaimable", "")):
-            items.append(Item(domain="runtime", kind="docker.build-cache", target="docker build cache", level="C5",
+            items.append(Item(domain="runtime", kind="docker.build-cache", target="docker build cache", level="deep", scope="machine",
                               cls="S2", op="cmd", args={"argv": ["docker", "builder", "prune", "-f"]},
                               size=_size_bytes(row.get("Reclaimable", "")), provenance="unknown",
                               undo="rebuilt on the next build", reason="reclaimable build cache"))
@@ -223,6 +224,12 @@ def _listening() -> Dict[int, List[str]]:
         elif line.startswith("n") and cur is not None:
             ports.setdefault(cur, []).append(line[1:])
     return ports
+
+
+def _short(cmd: str, n: int = 90) -> str:
+    """argv0's basename plus the arguments: the part of a command line a reviewer recognises."""
+    head, _, rest = cmd.partition(" ")
+    return (os.path.basename(head) + (" " + rest if rest else ""))[:n]
 
 
 def _is_shell(cmd: str) -> bool:
@@ -287,15 +294,15 @@ def collect_processes(root: str, cfg: dict, ledger: dict, notes: List[str], now:
                     fingerprint={"pid": pid, "started": round(started), "cmd": cmd[:200]},
                     args={"pid": pid}, undo=f"restart it: {cmd[:120]}")
         if prov == "ledger":
-            items.append(Item(kind="process.session", level="C2", cls="S1", op="kill",
-                              reason=f"started by this session: {cmd[:80]}", **base))
+            items.append(Item(kind="process.session", level="light", cls="S1", op="kill",
+                              reason=f"started by this session: {_short(cmd)}", **base))
         elif inside and orphan:
-            items.append(Item(kind="process.orphan", level="C3", cls="S2", op="kill",
-                              reason=f"orphaned process running in this repo: {cmd[:80]}", **base))
+            items.append(Item(kind="process.orphan", level="standard", cls="S2", op="kill",
+                              reason=f"orphaned process running in this repo: {_short(cmd)}", **base))
         elif inside:
-            items.append(Item(kind="process.live", level="C3", cls="S0", op="report",
-                              reason=f"process in this repo with a live parent (likely someone's terminal): {cmd[:80]}", **base))
+            items.append(Item(kind="process.live", level="standard", cls="S0", op="report",
+                              reason=f"process in this repo with a live parent (likely someone's terminal): {_short(cmd)}", **base))
         elif orphan:
-            items.append(Item(kind="process.orphan-foreign", level="C5", cls="S3", op="kill",
-                              reason=f"orphaned dev process outside this repo: {cmd[:80]}", **base))
+            items.append(Item(kind="process.orphan-foreign", level="deep", scope="machine", cls="S3", op="kill",
+                              reason=f"orphaned dev process outside this repo: {_short(cmd)}", **base))
     return items

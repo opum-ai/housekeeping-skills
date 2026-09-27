@@ -18,7 +18,7 @@ from typing import Dict, List, Optional, Sequence, Tuple
 from .files import scratchpad_root
 from .git import Repo
 from .harness import claude_home
-from .model import CLASSES, Item, level_index
+from .model import CLASSES, Item, level_index, normalize_level, scope_index
 from .util import (file_fingerprint, state_dir, fallback_trash_dir, protected_path, run, trash_command, within)
 
 
@@ -26,11 +26,12 @@ def hk_dir(root: str, sub: str) -> str:
     return state_dir(root, sub)
 
 
-def build_plan(items: List[Item], level: str, root: str, notes: List[str], chosen_by: str = "") -> dict:
-    li = level_index(level)
+def build_plan(items: List[Item], level: str, root: str, notes: List[str], chosen_by: str = "",
+               scope: str = "repo") -> dict:
+    li, si = level_index(level), scope_index(scope)
     planned, findings = [], []
     for it in items:
-        if level_index(it.level) > li:
+        if level_index(it.level) > li or scope_index(it.scope) > si:
             continue
         (planned if it.actionable else findings).append(it)
     planned.sort(key=lambda i: (CLASSES.index(i.cls), i.domain, i.kind, i.target))
@@ -40,7 +41,8 @@ def build_plan(items: List[Item], level: str, root: str, notes: List[str], chose
         b["count"] += 1
         b["bytes"] += it.size or 0
     return {
-        "level": level.upper(),
+        "level": normalize_level(level),
+        "scope": scope,
         "chosen_by": chosen_by,
         "root": root,
         "created": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
@@ -331,7 +333,7 @@ def apply(plan: dict, repo: Repo, cfg: dict, only: Optional[Sequence[str]] = Non
     for r in results:
         counts[r["result"]] = counts.get(r["result"], 0) + 1
     reclaimed = sum(r.get("bytes", 0) for r in results if r["result"] == "applied")
-    summary = {"level": plan["level"], "journal": journal_path if not dry_run else None, "counts": counts,
+    summary = {"level": plan["level"], "scope": plan.get("scope", "repo"), "journal": journal_path if not dry_run else None, "counts": counts,
                "reclaimed_bytes": reclaimed, "results": results}
     code = 6 if failed else (5 if drift else 0)
     return summary, code

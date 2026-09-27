@@ -13,14 +13,20 @@ from typing import Any, Dict, List, Optional
 
 SCHEMA_VERSION = 1
 
-LEVELS = ["C1", "C2", "C3", "C4", "C5"]
+LEVELS = ["minimal", "light", "standard", "deep", "immaculate"]
 LEVEL_NAMES = {
-    "C1": "Tidy",
-    "C2": "Sweep",
-    "C3": "Clean",
-    "C4": "Deep clean",
-    "C5": "Clean room",
+    "minimal": "Minimal",
+    "light": "Light",
+    "standard": "Standard",
+    "deep": "Deep",
+    "immaculate": "Immaculate",
 }
+# Numeric and legacy (C1..C5) spellings resolve to the canonical names.
+LEVEL_ALIASES = {**{str(i + 1): lv for i, lv in enumerate(LEVELS)},
+                 **{f"l{i + 1}": lv for i, lv in enumerate(LEVELS)},
+                 **{f"c{i + 1}": lv for i, lv in enumerate(LEVELS)}}
+# Scope is independent of level: a deeper level never silently widens reach.
+SCOPES = ["session", "repo", "machine"]
 CLASSES = ["S0", "S1", "S2", "S3"]
 PROVENANCE = ("ledger", "attributed", "unknown")
 
@@ -33,11 +39,23 @@ EXIT_CONFLICT = 5
 EXIT_FINDINGS = 6
 
 
-def level_index(level: str) -> int:
-    lv = level.upper()
+def normalize_level(level: str) -> str:
+    lv = (level or "").strip().lower().replace("_", "-")
+    lv = LEVEL_ALIASES.get(lv, lv)
     if lv not in LEVELS:
         raise ValueError(f"unknown level {level!r}; expected one of {', '.join(LEVELS)}")
-    return LEVELS.index(lv)
+    return lv
+
+
+def level_index(level: str) -> int:
+    return LEVELS.index(normalize_level(level))
+
+
+def scope_index(scope: str) -> int:
+    sc = (scope or "").strip().lower()
+    if sc not in SCOPES:
+        raise ValueError(f"unknown scope {scope!r}; expected one of {', '.join(SCOPES)}")
+    return SCOPES.index(sc)
 
 
 def raise_class(cls: str, by: int = 1) -> str:
@@ -54,7 +72,7 @@ class Item:
     domain: str  # git | files | runtime | harness | caches
     kind: str  # e.g. branch.landed, file.junk, container.stopped
     target: str  # path, ref, container id, pid
-    level: str  # the lowest cleanliness level that plans this item
+    level: str  # the lowest housekeeping level that plans this item
     cls: str  # S0..S3, after evidence adjustments
     op: str  # the action `apply` performs; "report" is never applied
     reason: str  # one line a reviewer can read
@@ -66,6 +84,7 @@ class Item:
     evidence: List[str] = field(default_factory=list)
     fingerprint: Dict[str, Any] = field(default_factory=dict)
     protected: Optional[str] = None  # reason, when the protected set matched
+    scope: str = "repo"  # session | repo | machine; ledger items default to session
     id: str = ""
 
     def __post_init__(self) -> None:
@@ -73,7 +92,10 @@ class Item:
             raise ValueError(f"bad class {self.cls}")
         if self.provenance not in PROVENANCE:
             raise ValueError(f"bad provenance {self.provenance}")
-        level_index(self.level)
+        self.level = normalize_level(self.level)
+        scope_index(self.scope)
+        if self.provenance == "ledger" and self.scope == "repo":
+            self.scope = "session"
         if not self.id:
             h = hashlib.sha1(f"{self.domain}\0{self.kind}\0{self.target}".encode()).hexdigest()
             self.id = f"{self.domain[:3]}-{h[:8]}"
