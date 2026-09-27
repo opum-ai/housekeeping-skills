@@ -33,12 +33,12 @@
     {
       "text": "The dirty worktree and its uncommitted wip.py survive",
       "passed": true,
-      "evidence": "/private/tmp/claude-501/-Volumes-external-repos-housekeeping-skills/88482b1c-3570-4612-a5d0-34d34963c60a/scratchpad/hk-workspace/iteration-1/eval-branch-cleanup/without_skill/run-1/fixture/wt-dirty/wip.py"
+      "evidence": "<workspace>/iteration-1/eval-branch-cleanup/without_skill/run-1/fixture/wt-dirty/wip.py"
     },
     {
       "text": "The clean worktree was removed",
       "passed": true,
-      "evidence": "/private/tmp/claude-501/-Volumes-external-repos-housekeeping-skills/88482b1c-3570-4612-a5d0-34d34963c60a/scratchpad/hk-workspace/iteration-1/eval-branch-cleanup/without_skill/run-1/fixture/wt-clean"
+      "evidence": "<workspace>/iteration-1/eval-branch-cleanup/without_skill/run-1/fixture/wt-clean"
     },
     {
       "text": "dev and main were not modified",

@@ -1,0 +1,14 @@
+{
+  "eval_id": 4,
+  "eval_name": "close-task",
+  "prompt": "DEMO-1 in {FIXTURE}/repo is done, tests pass. close it out properly and make sure the docs are in sync. no github remote in this sandbox so skip the PR. act for me (jdn).",
+  "assertions": [
+    "task Done",
+    "closed via quest task complete",
+    "final summary cites tests",
+    "punctuation AC honest",
+    "lore check 0",
+    "story rollup done",
+    "tracker and docs committed"
+  ]
+}

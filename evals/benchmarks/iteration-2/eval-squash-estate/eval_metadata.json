@@ -1,0 +1,12 @@
+{
+  "eval_id": 6,
+  "eval_name": "squash-estate",
+  "prompt": "we squash merge everything in {FIXTURE}/repo and the local branches have piled up. prune everything that's merged - I'm out for the day so don't wait for me, just leave notes on anything you didn't touch.",
+  "assertions": [
+    "all 8 squash-merged deleted",
+    "partial branch kept",
+    "old unlanded spike kept",
+    "dev unchanged",
+    "report explains the partial branch"
+  ]
+}

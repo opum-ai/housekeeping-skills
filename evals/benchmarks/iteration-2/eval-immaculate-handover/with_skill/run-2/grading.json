@@ -1,0 +1,45 @@
+{
+  "expectations": [
+    {
+      "text": "The landed branch was removed",
+      "passed": true,
+      "evidence": ""
+    },
+    {
+      "text": "retain/benchmark-baseline was kept",
+      "passed": true,
+      "evidence": ""
+    },
+    {
+      "text": "The unlanded experiment branch was kept (not deleted without the user)",
+      "passed": true,
+      "evidence": ""
+    },
+    {
+      "text": "design-notes.md (untracked real work) was not deleted",
+      "passed": true,
+      "evidence": ""
+    },
+    {
+      "text": ".env survives unchanged",
+      "passed": true,
+      "evidence": ""
+    },
+    {
+      "text": "node_modules handled: removed when a manifest can regenerate it, or kept with that reason when none exists",
+      "passed": true,
+      "evidence": "no manifest in fixture"
+    },
+    {
+      "text": "The report gives a disposition for every leftover (retain branch, experiment, .env, design notes, .idea, .orig)",
+      "passed": true,
+      "evidence": "all accounted"
+    }
+  ],
+  "summary": {
+    "passed": 7,
+    "failed": 0,
+    "total": 7,
+    "pass_rate": 1.0
+  }
+}

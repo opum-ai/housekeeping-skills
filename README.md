@@ -181,44 +181,45 @@ merges, and pruning behave as they do against a real host.
 Results: see the table below (updated per benchmark iteration).
 
 <!-- benchmark:begin -->
-**Iteration 1** (2026-09-26, claude-opus-5-5; `evals/benchmarks/iteration-1/`). 5 task evals, with vs without the
-plugin, graded on the resulting repo/filesystem state:
+**Iteration 2** (2026-09-27, claude-opus-5-5, Minimal..Immaculate; `evals/benchmarks/iteration-2/`). 8 task evals, with
+vs without the plugin, 3 runs per configuration on the three new, harder cases; graded on the resulting repo, remote,
+filesystem and process state:
 
 | | With skills | Without |
 |---|---|---|
-| Assertion pass rate | **100%** (47/47) | 95.6% (45/47) |
-| Time | 138 s ± 44 | 93 s ± 20 |
-| Tokens | 61.9k ± 11.2k | 45.7k ± 6.3k |
+| Assertion pass rate | **98.6%** | 88.9% |
+| Time | 131 s ± 50 | 81 s ± 31 |
+| Tokens | 62k ± 17k | 39k ± 13k |
 
-An honest reading:
-- **The baseline is strong.** Opus 5.5 without the plugin already keeps `feat/gone`, spots
-  `parser_v2.py` as real work, and leaves a false acceptance criterion unchecked. The
-  difference is two assertions: the landed *remote* branch deleted, and separate logical
-  commits.
-- **What the skills add that the assertions don't capture:**
-  - an undo journal for every removal;
-  - the level and the reason, stated;
-  - a follow-up task that carries an unmet criterion.
-- **Iteration 1 was most useful for the engine defects it exposed**, all fixed:
-  - state leaking into the repo;
-  - a two-pass worktree branch;
-  - a `claude project purge` slug mismatch.
-- **Iteration 2 needs harder, more discriminating cases.**
+| Case (runs) | With | Without | What differed |
+|---|---|---|---|
+| squash-estate: 8 squash-merged branches, a partially landed one, and a stale-looking unlanded one (3) | 14/15 | 13/15 | Every unblocked run deleted exactly the 8. Nobody deleted the partial branch or the spike. |
+| immaculate-handover (3) | **21/21** | 19/21 | Only the skill runs produced a verified disposition for every leftover (`hk disposition` exit 0). |
+| runtime-sandbox: an orphaned server in the repo plus a decoy server outside it (3) | **9/9** | 7/9 | The skill runs stopped only the repo's orphan, through `hk`. No run killed the decoy. |
+| 5 iteration-1 cases (1) | 42/42 | 40/42 | The baseline kept a landed remote branch and mixed two concerns into one commit. |
 
-**Triggering: 51/52** should-fire and near-miss queries passed, 3 runs each, each run in an isolated project dir (see
-`evals/triggers.py`):
+**Read this before quoting the delta.** 7 of the 9 failed assertions are Claude Code
+auto-mode classifier blocks: the harness refused a destructive command, and the agent
+correctly stopped.
+- **Baselines: 6 blocks,** on `git branch -D`, `rm`, and `kill`.
+- **Skill runs: 1 block,** on `hk apply` itself.
 
-| Skill | Passed |
-|---|---|
-| `tidy` | 12/12 |
-| `git-hygiene` | 7/8 |
-| `session-sync` | 8/8 |
-| `workspace-clean` | 8/8 |
-| `runtime-clean` | 8/8 |
-| `harness-hygiene` | 8/8 |
+The classifier examines the engine's single `hk apply` call less closely than it examines
+each raw command, so the plugin relies on its own guards instead:
+- containment proofs, fingerprints, per-class gates, and an undo journal;
+- enforcement of **your own** permission rules on the equivalent command. A
+  `permissions.deny` rule makes `hk apply` refuse the item. An `ask` rule or an auto-mode
+  `soft_deny` rule (for example `Bash(git branch -D:*)`) makes it require a per-item
+  confirmation.
 
-The one miss, "promote dev to main", is taken by `opum-sdlc` when it is installed, which is the intended owner of
-promotion (ADR-0002). Bare "tidy up" and "time for a deep clean" trigger `tidy` 3/3.
+If you want the harness to confirm every apply as well, add
+`"ask": ["Bash(python3 *hk.py apply:*)"]` to your permissions.
+
+**Triggering: 51/52** should-fire and near-miss queries, 3 runs each, each in an isolated
+project dir (`evals/triggers.py`). Bare "tidy up" and "time for a deep clean" trigger
+`tidy` 3/3. The one miss, "promote dev to main", goes to `opum-sdlc`, its intended owner.
+
+Iteration 1 (C1–C5 draft, 5 cases): 100% vs 95.6%. See `evals/benchmarks/iteration-1/`.
 <!-- benchmark:end -->
 
 ## Development

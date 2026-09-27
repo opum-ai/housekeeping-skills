@@ -9,7 +9,7 @@ I only read files. Nothing was changed, moved or deleted. This file is the only 
 ## Setup (paste once; every command below uses these)
 
 ```sh
-FIX=/private/tmp/claude-501/-Volumes-external-repos-housekeeping-skills/88482b1c-3570-4612-a5d0-34d34963c60a/scratchpad/hk-workspace/iteration-1/eval-harness-audit/without_skill/run-1/fixture
+FIX=<workspace>/iteration-1/eval-harness-audit/without_skill/run-1/fixture
 export CLAUDE_CONFIG_DIR="$FIX/claude-home"
 REPO="$FIX/repo"
 PROJ="$CLAUDE_CONFIG_DIR/projects/-private-tmp-claude-501--Volumes-external-repos-housekeeping-skills-88482b1c-3570-4612-a5d0-34d34963c60a-scratchpad-hk-workspace-iteration-1-eval-harness-audit-without-skill-run-1-fixture-repo"
