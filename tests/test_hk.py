@@ -272,8 +272,9 @@ def test_orphaned_dev_server_in_repo_is_found_and_stopped(estate):
     root = estate["root"]
     marker = f"hk-test-{os.getpid()}"
     # Double-fork so the server is reparented (PPID 1): the orphan shape agents leave behind.
+    # --directory is this test's own path, so cleanup can never match anyone else's server.
     subprocess.run(["sh", "-c", f"cd '{root}' && nohup {sys.executable} -m http.server 0 --bind 127.0.0.1 "
-                    f"--directory . >/dev/null 2>&1 & echo {marker} >/dev/null"], check=True)
+                    f"--directory '{root}' >/dev/null 2>&1 & echo {marker} >/dev/null"], check=True)
     try:
         found = None
         for _ in range(50):
@@ -288,7 +289,7 @@ def test_orphaned_dev_server_in_repo_is_found_and_stopped(estate):
         summary, code = planmod.apply(plan, Repo(root, cfgmod.load(root)), cfgmod.load(root), approve_s2=True)
         assert summary["results"][0]["result"] == "applied", summary
     finally:
-        subprocess.run(["pkill", "-f", f"http.server 0 --bind 127.0.0.1 --directory ."], check=False)
+        subprocess.run(["pkill", "-f", f"http.server 0 --bind 127.0.0.1 --directory {root}"], check=False)
 
 
 def test_engine_state_never_lands_in_the_working_tree(estate):
@@ -355,3 +356,45 @@ def test_disposition_accounts_for_every_item(estate):
     sets = sum((["--set", f"{i}=deferred:follow-up task"] for i in open_ids), [])
     p = subprocess.run(base + sets, capture_output=True, text=True)
     assert p.returncode == 0 and json.loads(p.stdout)["data"]["unaccounted"] == 0
+
+
+# --- the user's permission rules bind hk apply too -----------------------------
+
+def _settings(root, data):
+    os.makedirs(os.path.join(root, ".claude"), exist_ok=True)
+    with open(os.path.join(root, ".claude", "settings.local.json"), "w") as fh:
+        json.dump(data, fh)
+
+
+def test_deny_rule_refuses_the_equivalent_action(estate):
+    root = estate["root"]
+    _settings(root, {"permissions": {"deny": ["Bash(git branch -D:*)"]}})
+    repo, items = git_items(root)
+    plan = planmod.build_plan(items, "standard", root, [])
+    landed = next(i for i in plan["items"] if i["target"] == "refs/heads/feat/merged")
+    assert landed["command"] == "git branch -D feat/merged" and landed["policy"]["verdict"] == "deny"
+    summary, _ = planmod.apply(plan, repo, cfgmod.load(root))
+    rec = next(r for r in summary["results"] if r["target"] == "refs/heads/feat/merged")
+    assert rec["result"] == "denied"
+    assert "feat/merged" in git(root, "branch", "--list", "feat/merged")
+
+
+def test_soft_deny_needs_per_item_confirmation(estate):
+    root = estate["root"]
+    _settings(root, {"autoMode": {"soft_deny": ["$defaults", "Bash(git branch -D:*) - verify against dev first"]}})
+    repo, items = git_items(root)
+    plan = planmod.build_plan(items, "standard", root, [])
+    landed = next(i for i in plan["items"] if i["target"] == "refs/heads/feat/merged")
+    summary, _ = planmod.apply(plan, repo, cfgmod.load(root))
+    rec = next(r for r in summary["results"] if r["id"] == landed["id"])
+    assert rec["result"] == "gated" and "permission rules ask" in rec["detail"]
+    summary, _ = planmod.apply(plan, repo, cfgmod.load(root), only=[landed["id"]], confirm=[landed["id"]])
+    assert summary["results"][0]["result"] == "applied"
+
+
+def test_dry_run_leaves_no_state_behind(estate):
+    root = estate["root"]
+    repo, items = git_items(root)
+    plan = planmod.build_plan(items, "standard", root, [])
+    planmod.apply(plan, repo, cfgmod.load(root), dry_run=True)
+    assert not os.path.exists(os.path.join(root, ".git", "housekeeping", "journal"))

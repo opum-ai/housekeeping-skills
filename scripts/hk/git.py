@@ -281,6 +281,11 @@ def collect(repo: Repo, ledger: dict, now: Optional[float] = None, fetch: bool =
             )
         elif age >= stale_days:
             items.append(
+                Item(kind="branch.unlanded", level="standard", cls="S0", op="report",
+                     reason=f"UNLANDED work, idle {age:.0f} days: land it, or archive it in a Deep pass (per-item confirmation)",
+                     evidence=list(evidence), fingerprint=fp, **base)
+            )
+            items.append(
                 Item(
                     kind="branch.stale-unlanded",
                     level="deep",

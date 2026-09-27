@@ -180,7 +180,12 @@ def collect_tmp(root: str, cfg: dict, ledger: dict, sizes: bool = True, now: Opt
     return items
 
 
+SESSION_DIR = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+
+
 def scratchpad_root() -> str:
+    if os.environ.get("HK_SCRATCHPAD_ROOT"):
+        return os.environ["HK_SCRATCHPAD_ROOT"]
     return f"/private/tmp/claude-{os.getuid()}" if os.path.isdir("/private/tmp") else f"/tmp/claude-{os.getuid()}"
 
 
@@ -206,8 +211,8 @@ def collect_scratchpads(root: str, cfg: dict, level: str, sizes: bool = True) ->
         is_mine = proj in mine
         for sess in sorted(os.listdir(pdir)):
             sdir = os.path.join(pdir, sess)
-            if not os.path.isdir(sdir):
-                continue
+            if not os.path.isdir(sdir) or not SESSION_DIR.match(sess):
+                continue  # only Claude Code session dirs; other tools also write under this root
             age = _newest_mtime_age(sdir)
             prot = "current session" if current and sess == current else None
             if age is None or (age < max_age and not prot):

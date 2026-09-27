@@ -19,6 +19,7 @@ from .files import scratchpad_root
 from .git import Repo
 from .harness import claude_home
 from .model import CLASSES, Item, level_index, normalize_level, scope_index
+from .policy import equivalent_command, load_rules, verdict
 from .util import (file_fingerprint, state_dir, fallback_trash_dir, protected_path, run, trash_command, within)
 
 
@@ -35,6 +36,10 @@ def build_plan(items: List[Item], level: str, root: str, notes: List[str], chose
             continue
         (planned if it.actionable else findings).append(it)
     planned.sort(key=lambda i: (CLASSES.index(i.cls), i.domain, i.kind, i.target))
+    # A target that is planned for action needs no separate "finding" line.
+    planned_targets = {i.target for i in planned}
+    findings = [f for f in findings if f.target not in planned_targets]
+    rules = load_rules(root)
     by_class: Dict[str, dict] = {}
     for it in planned:
         b = by_class.setdefault(it.cls, {"count": 0, "bytes": 0})
@@ -47,10 +52,19 @@ def build_plan(items: List[Item], level: str, root: str, notes: List[str], chose
         "root": root,
         "created": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
         "summary": {"by_class": by_class, "planned": len(planned), "findings": len(findings)},
-        "items": [i.to_dict() for i in planned],
+        "items": [_annotate(i, rules) for i in planned],
         "findings": [i.to_dict() for i in findings],
         "notes": notes,
     }
+
+
+def _annotate(it: Item, rules) -> dict:
+    d = it.to_dict()
+    d["command"] = equivalent_command(it)
+    v, rule = verdict(it, rules)
+    if v:
+        d["policy"] = {"verdict": v, "rule": rule}
+    return d
 
 
 def save_plan(plan: dict, root: str, out: Optional[str] = None) -> str:
@@ -274,20 +288,30 @@ def execute(item: Item, repo: Repo, force_kill: bool = False) -> Tuple[bool, str
 def apply(plan: dict, repo: Repo, cfg: dict, only: Optional[Sequence[str]] = None, approve_s2: bool = False,
           confirm: Sequence[str] = (), dry_run: bool = False, force_kill: bool = False) -> Tuple[dict, int]:
     root = plan["root"]
-    journal_path = os.path.join(hk_dir(root, "journal"), f"{time.strftime('%Y%m%dT%H%M%S')}-{plan['level']}.jsonl")
+    journal_path = os.path.join(state_dir(root, "journal", create=False),
+                                f"{time.strftime('%Y%m%dT%H%M%S')}-{plan['level']}.jsonl")
     results = []
     drift = failed = 0
     confirm_set = set(confirm)
+    rules = load_rules(root)
     # Worktrees go first: removing a clean worktree is what frees its landed branch for deletion.
     order = {"git-worktree-remove": 0, "git-worktree-prune": 0}
     for d in sorted(plan["items"], key=lambda x: order.get(x["op"], 1)):
-        it = Item.from_dict(d)
+        it = Item.from_dict({k: v for k, v in d.items() if k not in ("command", "policy")})
         if only and it.id not in only:
             continue
         rec = {"id": it.id, "op": it.op, "cls": it.cls, "kind": it.kind, "target": it.target, "undo": it.undo,
                "ts": time.time()}
         gate = None
-        if it.cls == "S2" and not approve_s2:
+        pv, prule = verdict(it, rules)
+        rec["command"] = equivalent_command(it)
+        if pv == "deny":
+            rec.update(result="denied", detail=f"your permission rules deny this command ({prule}); not run")
+            results.append(rec)
+            continue
+        if pv == "ask" and it.id not in confirm_set:
+            gate = f"your permission rules ask before this command ({prule}): pass --confirm {it.id} only after the user approves it"
+        elif it.cls == "S2" and not approve_s2:
             gate = "needs batch approval (S2): rerun with --approve-s2 after the user approves"
         elif it.cls == "S3" and it.id not in confirm_set:
             gate = "needs per-item confirmation (S3): pass --confirm " + it.id
@@ -327,13 +351,15 @@ def apply(plan: dict, repo: Repo, cfg: dict, only: Optional[Sequence[str]] = Non
         if not ok:
             failed += 1
         results.append(rec)
+        os.makedirs(os.path.dirname(journal_path), exist_ok=True)  # only when something was actually done
         with open(journal_path, "a") as fh:
             fh.write(json.dumps(rec) + "\n")
     counts: Dict[str, int] = {}
     for r in results:
         counts[r["result"]] = counts.get(r["result"], 0) + 1
     reclaimed = sum(r.get("bytes", 0) for r in results if r["result"] == "applied")
-    summary = {"level": plan["level"], "scope": plan.get("scope", "repo"), "journal": journal_path if not dry_run else None, "counts": counts,
+    wrote = os.path.exists(journal_path)  # the journal exists only if something was actually done
+    summary = {"level": plan["level"], "scope": plan.get("scope", "repo"), "journal": journal_path if wrote else None, "counts": counts,
                "reclaimed_bytes": reclaimed, "results": results}
     code = 6 if failed else (5 if drift else 0)
     return summary, code

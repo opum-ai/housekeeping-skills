@@ -88,12 +88,14 @@ def render_plan(plan: dict) -> str:
                 "S2": "regenerable: approve once as a batch (--approve-s2)",
                 "S3": "IRREVERSIBLE: confirm each by id (--confirm <id>)"}[cls]
         lines += [f"## {cls}: {len(rows)} item(s), {human_size(total)} ({gate})", "",
-                  "| id | level | kind | target | size | why |", "|---|---|---|---|---|---|"]
+                  "| id | level | kind | command | size | why |", "|---|---|---|---|---|---|"]
         for i in rows:
-            tgt = i["target"]
-            if len(tgt) > 70:
-                tgt = "…" + tgt[-69:]
-            lines.append(f"| `{i['id']}` | {i['level']} | {i['kind']} | `{tgt}` | {human_size(i.get('size'))} | {i['reason']} |")
+            tgt = i.get("command") or i["target"]
+            if len(tgt) > 80:
+                tgt = tgt[:40] + "…" + tgt[-39:]
+            pol = i.get("policy")
+            why = i["reason"] + (f" **[your rules: {pol['verdict']}]**" if pol else "")
+            lines.append(f"| `{i['id']}` | {i['level']} | {i['kind']} | `{tgt}` | {human_size(i.get('size'))} | {why} |")
         lines.append("")
     if plan["findings"]:
         lines += ["## Findings (not planned: review, land, or decide)", ""]

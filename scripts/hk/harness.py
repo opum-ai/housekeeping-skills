@@ -146,6 +146,21 @@ def collect_context(root: str, slugs: List[str]) -> List[Item]:
                               evidence=[f"{n} lines"]))
     for slug in slugs:
         mem = os.path.join(claude_home(), "projects", slug, "memory")
+        index = os.path.join(mem, "MEMORY.md")
+        if os.path.exists(index):
+            text = open(index, encoding="utf-8", errors="replace").read()
+            linked = re.findall(r"\]\(([^)#\s]+\.md)\)", text)
+            missing = [l for l in linked if not os.path.exists(os.path.join(mem, l))]
+            if missing:
+                items.append(Item(domain="harness", kind="memory.broken-index", target=index, level="deep", cls="S0",
+                                  op="report", provenance="attributed", evidence=missing[:20],
+                                  reason=f"{len(missing)} of {len(linked)} MEMORY.md entries point at files that do not exist"))
+            listed = {os.path.basename(l) for l in linked}
+            for mf in sorted(glob.glob(os.path.join(mem, "*.md"))):
+                if os.path.basename(mf) != "MEMORY.md" and os.path.basename(mf) not in listed:
+                    items.append(Item(domain="harness", kind="memory.unindexed", target=mf, level="deep", cls="S0",
+                                      op="report", provenance="attributed",
+                                      reason="memory file not listed in MEMORY.md, so it is never recalled: index it or delete it"))
         for mf in sorted(glob.glob(os.path.join(mem, "*.md"))):
             if os.path.basename(mf) == "MEMORY.md":
                 continue
