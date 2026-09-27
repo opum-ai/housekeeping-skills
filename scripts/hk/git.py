@@ -241,7 +241,11 @@ def collect(repo: Repo, ledger: dict, now: Optional[float] = None, fetch: bool =
         if name == current:
             why_protected = "checked out in the main worktree"
         elif name in checked_out and not checked_out[name].get("main"):
-            why_protected = f"checked out in worktree {checked_out[name]['path']}"
+            wt = checked_out[name]
+            # A clean, unlocked worktree is itself planned for removal (worktrees apply first),
+            # so its landed branch can go in the same pass; anything else keeps the branch.
+            if wt.get("locked") or wt.get("prunable") or repo.dirty_count(wt["path"]) != 0:
+                why_protected = f"checked out in worktree {wt['path']}"
         else:
             g = match_any(name, protect_globs)
             if g:

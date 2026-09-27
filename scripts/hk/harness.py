@@ -36,7 +36,8 @@ def _pid_alive(pid: int) -> bool:
 
 
 def claude_home() -> str:
-    return os.environ.get("HK_CLAUDE_HOME", CLAUDE)
+    """Claude Code's config dir: CLAUDE_CONFIG_DIR relocates ~/.claude (HK_CLAUDE_HOME overrides for tests)."""
+    return os.environ.get("HK_CLAUDE_HOME") or os.environ.get("CLAUDE_CONFIG_DIR") or CLAUDE
 
 
 def collect_plugin_cache(sizes: bool = True) -> List[Item]:
@@ -101,12 +102,22 @@ def collect_projects(sizes: bool = True) -> List[Item]:
         cwd = _transcript_cwd(full)
         if not cwd or os.path.exists(cwd):
             continue
-        items.append(Item(domain="harness", kind="project.missing-path", target=cwd, level="C4", cls="S3", op="cmd",
-                          args={"argv": ["claude", "project", "purge", cwd, "-y"]}, provenance="attributed",
-                          size=disk_usage(full) if sizes else None, fingerprint={"exists": False},
-                          evidence=[f"transcripts in {full}", "project path no longer exists"],
+        # `claude project purge <path>` finds state by the slug of the path. Use it only when this
+        # directory really is that slug; otherwise the purge would silently find nothing.
+        slug = re.sub(r"[^A-Za-z0-9]", "-", cwd)
+        if d == slug:
+            op, args = "cmd", {"argv": ["claude", "project", "purge", cwd, "-y"]}
+            undo = "none: transcripts are deleted (export first with /export if any matter)"
+        else:
+            op, args = "trash", {}
+            undo = "restore from the Trash"
+        items.append(Item(domain="harness", kind="project.missing-path", target=(cwd if op == "cmd" else full),
+                          level="C4", cls="S3", op=op, args=args, provenance="attributed",
+                          size=disk_usage(full) if sizes else None,
+                          fingerprint=({"exists": False} if op == "cmd" else file_fingerprint(full)),
+                          evidence=[f"transcripts in {full}", f"project path {cwd} no longer exists"],
                           reason="transcripts, tasks, and file history for a project whose directory is gone",
-                          undo="none: transcripts are deleted (export first with /export if any matter)"))
+                          undo=undo))
     return items
 
 

@@ -19,13 +19,11 @@ from .files import scratchpad_root
 from .git import Repo
 from .harness import claude_home
 from .model import CLASSES, Item, level_index
-from .util import (file_fingerprint, fallback_trash_dir, protected_path, run, trash_command, within)
+from .util import (file_fingerprint, state_dir, fallback_trash_dir, protected_path, run, trash_command, within)
 
 
 def hk_dir(root: str, sub: str) -> str:
-    d = os.path.join(root, ".claude", "housekeeping", sub)
-    os.makedirs(d, exist_ok=True)
-    return d
+    return state_dir(root, sub)
 
 
 def build_plan(items: List[Item], level: str, root: str, notes: List[str], chosen_by: str = "") -> dict:
@@ -77,6 +75,8 @@ def _allowed_roots(root: str, kind: str) -> List[str]:
         return [tempfile.gettempdir()]
     if kind.startswith("scratchpad."):
         return [scratchpad_root()]
+    if kind.startswith("project."):
+        return [os.path.join(claude_home(), "projects")]
     if kind.startswith("plugin."):
         return [os.path.join(claude_home(), "plugins")]
     if kind == "cache.xcode":
@@ -276,7 +276,9 @@ def apply(plan: dict, repo: Repo, cfg: dict, only: Optional[Sequence[str]] = Non
     results = []
     drift = failed = 0
     confirm_set = set(confirm)
-    for d in plan["items"]:
+    # Worktrees go first: removing a clean worktree is what frees its landed branch for deletion.
+    order = {"git-worktree-remove": 0, "git-worktree-prune": 0}
+    for d in sorted(plan["items"], key=lambda x: order.get(x["op"], 1)):
         it = Item.from_dict(d)
         if only and it.id not in only:
             continue

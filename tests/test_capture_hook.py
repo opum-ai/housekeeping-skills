@@ -28,7 +28,8 @@ def test_noop_without_config(estate):
     p = run_hook({"cwd": root, "hook_event_name": "PreToolUse", "tool_name": "Write",
                   "tool_input": {"file_path": os.path.join(root, "x.py")}, "session_id": "s"})
     assert p.returncode == 0
-    assert not os.path.exists(os.path.join(root, ".claude", "housekeeping", "ledger"))
+    assert not os.path.exists(os.path.join(root, ".git", "housekeeping", "ledger"))
+    assert not os.path.exists(os.path.join(root, ".claude"))
 
 
 def test_records_new_file_branch_worktree_and_background(estate):
@@ -52,8 +53,7 @@ def test_records_new_file_branch_worktree_and_background(estate):
 def test_unwritable_ledger_still_exits_zero(estate):
     root = estate["root"]
     enable(root)
-    os.makedirs(os.path.join(root, ".claude"), exist_ok=True)
-    with open(os.path.join(root, ".claude", "housekeeping"), "w") as fh:
+    with open(os.path.join(root, ".git", "housekeeping"), "w") as fh:
         fh.write("a file where the ledger dir should be")
     p = run_hook({"cwd": root, "hook_event_name": "PreToolUse", "tool_name": "Write",
                   "tool_input": {"file_path": "new.py"}, "session_id": "s"})

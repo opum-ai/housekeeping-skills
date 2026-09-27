@@ -289,3 +289,26 @@ def test_orphaned_dev_server_in_repo_is_found_and_stopped(estate):
         assert summary["results"][0]["result"] == "applied", summary
     finally:
         subprocess.run(["pkill", "-f", f"http.server 0 --bind 127.0.0.1 --directory ."], check=False)
+
+
+def test_engine_state_never_lands_in_the_working_tree(estate):
+    root = estate["root"]
+    repo, items = git_items(root)
+    plan = planmod.build_plan(items, "C3", root, [])
+    path = planmod.save_plan(plan, root)
+    summary, _ = planmod.apply(plan, repo, cfgmod.load(root))
+    assert "/.git/housekeeping/" in path and "/.git/housekeeping/" in summary["journal"]
+    assert git(root, "status", "--porcelain") == ""
+
+
+def test_landed_branch_in_clean_worktree_goes_in_one_pass(estate, tmp_path):
+    root = estate["root"]
+    git(root, "branch", "feat/wt-landed", "dev")
+    wt = str(tmp_path / "wt-landed")
+    git(root, "worktree", "add", "-q", wt, "feat/wt-landed")
+    repo, items = git_items(root)
+    plan = planmod.build_plan(items, "C3", root, [])
+    summary, code = planmod.apply(plan, repo, cfgmod.load(root))
+    assert not os.path.exists(wt)
+    assert "feat/wt-landed" not in git(root, "branch", "--list", "feat/wt-landed")
+    assert os.path.exists(os.path.join(estate["wt"], "wip.txt"))  # the dirty one is untouched

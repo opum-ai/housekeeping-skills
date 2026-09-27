@@ -32,6 +32,31 @@ PROTECTED_PATH_GLOBS = [
 ]
 
 
+def state_dir(root: str, sub: str = "", create: bool = True) -> str:
+    """Engine state lives in the git common dir (<repo>/.git/housekeeping/...).
+
+    Never in the working tree: housekeeping must not leave untracked files behind,
+    and state under .git is shared by every worktree of the repo and never committed.
+    Resolved without a subprocess so the capture hook stays fast.
+    """
+    dotgit = os.path.join(root, ".git")
+    gitdir = dotgit
+    if os.path.isfile(dotgit):
+        with open(dotgit) as fh:
+            line = fh.read().strip()
+        if line.startswith("gitdir:"):
+            gitdir = os.path.normpath(os.path.join(root, line.split(":", 1)[1].strip()))
+    common = gitdir
+    cfile = os.path.join(gitdir, "commondir")
+    if os.path.isfile(cfile):
+        with open(cfile) as fh:
+            common = os.path.normpath(os.path.join(gitdir, fh.read().strip()))
+    d = os.path.join(common, "housekeeping", sub) if sub else os.path.join(common, "housekeeping")
+    if create:
+        os.makedirs(d, exist_ok=True)
+    return d
+
+
 def run(cmd: Sequence[str], cwd: Optional[str] = None, timeout: float = 60, check: bool = False) -> Tuple[int, str, str]:
     try:
         p = subprocess.run(

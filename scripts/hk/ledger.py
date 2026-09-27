@@ -1,8 +1,9 @@
 """The provenance ledger: what agent sessions recorded creating.
 
-One JSONL file per session under `<repo>/.claude/housekeeping/ledger/`. The
-capture hook appends to it; `hk ledger add` lets a skill record by hand. The
-directory is gitignored: provenance is machine-local evidence, not history.
+One JSONL file per session under `<git-common-dir>/housekeeping/ledger/`. The
+capture hook appends to it; `hk ledger add` lets a skill record by hand. It lives
+inside .git: provenance is machine-local evidence, never committed history, and
+housekeeping must not itself leave untracked files in the working tree.
 """
 from __future__ import annotations
 
@@ -14,8 +15,10 @@ from typing import Dict, Optional
 KINDS = ("file", "dir", "branch", "worktree", "container", "process")
 
 
-def ledger_dir(root: str) -> str:
-    return os.path.join(root, ".claude", "housekeeping", "ledger")
+def ledger_dir(root: str, create: bool = False) -> str:
+    from .util import state_dir
+
+    return state_dir(root, "ledger", create=create)
 
 
 def add(root: str, kind: str, target: str, session: Optional[str] = None, cmd: Optional[str] = None,
@@ -23,8 +26,7 @@ def add(root: str, kind: str, target: str, session: Optional[str] = None, cmd: O
     if kind not in KINDS:
         raise ValueError(f"unknown ledger kind {kind!r}; expected one of {', '.join(KINDS)}")
     session = session or os.environ.get("CLAUDE_CODE_SESSION_ID") or "unknown-session"
-    d = ledger_dir(root)
-    os.makedirs(d, exist_ok=True)
+    d = ledger_dir(root, create=True)
     if kind in ("file", "dir", "worktree") and not os.path.isabs(target):
         target = os.path.abspath(os.path.join(cwd or root, target))
     entry = {"ts": time.time(), "session": session, "kind": kind, "target": target}
