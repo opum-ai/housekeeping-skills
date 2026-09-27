@@ -21,8 +21,22 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, os.environ["SC"])
+import scripts.run_eval as _run_eval  # noqa: E402
 from scripts.run_eval import run_single_query  # noqa: E402
 from scripts.utils import parse_skill_md  # noqa: E402
+
+_Popen = _run_eval.subprocess.Popen
+
+
+def _popen_without_persistence(cmd, *args, **kwargs):
+    # Each probe is a throwaway `claude -p`: without this flag every run leaves a transcript
+    # dir in ~/.claude/projects for a temp path that no longer exists (180 of them, measured).
+    if cmd and cmd[0] == "claude" and "--no-session-persistence" not in cmd:
+        cmd = list(cmd) + ["--no-session-persistence"]
+    return _Popen(cmd, *args, **kwargs)
+
+
+_run_eval.subprocess.Popen = _popen_without_persistence
 
 
 def one(query, name, desc, model, timeout):

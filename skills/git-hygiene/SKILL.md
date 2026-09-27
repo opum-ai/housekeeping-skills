@@ -47,6 +47,10 @@ Everything reversible you may do without asking.
 
 ### Stage and commit in logical units
 
+At **Minimal**, preserve the work: one WIP commit on the task branch (`WIP: <task id>: where
+things stand`) is fine, and so is a clearly named stash if the branch cannot take a commit.
+Push it. From **Light** up, commit in logical units, as described below.
+
 1. Survey: `$HK status --json` (branch, trunk, uncommitted changes, ahead/behind).
    - **On the trunk or release branch?** Stop and branch first. Commits go on a task
      branch, never on `dev` or `main`. A tracker task exists before the branch in Opum
@@ -57,7 +61,7 @@ Everything reversible you may do without asking.
    `git add -p` when one file mixes concerns.
 3. **Keep out**:
    - **Junk.** Agent junk (`*.bak`, `*_v2.*`, `debug*.log`, scratch scripts,
-     `*_SUMMARY.md`). `$HK plan --level C2 --domains files` lists them. Remove or ignore
+     `*_SUMMARY.md`). `$HK plan --level standard --domains files` lists them. Remove or ignore
      them; don't commit them.
    - **Secrets.** Run `gitleaks protect --staged` if installed. Otherwise grep the staged
      diff for `BEGIN .*PRIVATE KEY`, `AKIA[0-9A-Z]{16}`, `ghp_`, `sk-`, `xox[bp]-`, and
@@ -80,7 +84,7 @@ Everything reversible you may do without asking.
 Never `--force`. `--force-with-lease` on your own task branch after a rebase is still a
 force-push, so ask first.
 
-### Pull request (C2+)
+### Pull request (Standard)
 
 `gh pr create --base <trunk> --fill`, then edit the body. It carries:
 - the task id;
@@ -90,7 +94,7 @@ force-push, so ask first.
 One task, one branch, one PR. Don't stack PRs on another PR's branch: when the parent
 merges and its branch is deleted, GitHub closes the child PR.
 
-### Merge (C3)
+### Merge (Standard, when the task is finished)
 
 Merge only when:
 - the required checks are green **on the head SHA**;
@@ -123,7 +127,7 @@ Promotion of `dev` to `main` happens on an explicit request.
 ## Pruning
 
 ```bash
-$HK plan --level C3 --domains git      # add --no-gh if gh is unavailable; the plan notes what it could not prove
+$HK plan --level standard --domains git   # --level deep adds stale branches and stashes; add --no-gh if gh is unavailable; the plan notes what it could not prove
 ```
 
 Read the plan before applying it:
@@ -134,9 +138,9 @@ Read the plan before applying it:
 - **`worktree.clean` (S1), `worktree.prunable` (S1).** Worktree removal never uses
   `--force`. A dirty worktree appears as `worktree.dirty`, a **finding**: work hides
   there, so land it first.
-- **`stash.old` (C4, S1).** The stash commit is kept under `refs/archive/stash/<sha>`,
+- **`stash.old` (Deep, S1).** The stash commit is kept under `refs/archive/stash/<sha>`,
   then dropped. The undo is `git stash store`.
-- **`branch.stale-unlanded` (C4, S3).** Unlanded work idle past `[branches] stale_days`.
+- **`branch.stale-unlanded` (Deep, S3).** Unlanded work idle past `[branches] stale_days`.
   It is archived to `refs/tags/archive/<name>`, then deleted, and **only with the user's
   per-item confirmation**. Before asking, show the unique commits
   (`git log --oneline <trunk>..<branch>`) so the user decides on content, not on a name.
@@ -146,7 +150,7 @@ Read the plan before applying it:
 Apply with `$HK apply <plan> [--confirm <ids>]`. Anything whose tip moved since planning is
 skipped as drift. Report it; don't force it.
 
-**Stale "In Progress" / open-work check (C3).** In quest repos, the tracker listing only
+**Stale "In Progress" / open-work check (Standard).** In quest repos, the tracker listing only
 sees the checked-out branch. Before reporting that nothing is open:
 - read the `scope` key of `quest task list --status "In Progress" --json`;
 - cross-check `gh pr list --state open`.

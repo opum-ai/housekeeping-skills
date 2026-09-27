@@ -1,6 +1,6 @@
 ---
 name: harness-hygiene
-description: Keep the Claude Code harness itself clean - old sessions and transcripts (including projects whose folders no longer exist), auto-memory and CLAUDE.md bloat, stale or superseded memories, the plugin cache and unused or context-heavy plugins, duplicate skills, hooks, one-off or overly broad permission allowlist rules, MCP servers, background agents and scheduled tasks. Use this skill whenever the user says Claude feels slow or the context fills up fast, asks to clean up old sessions, prune memories, slim CLAUDE.md, review hooks or permissions, remove unused plugins or MCP servers, asks why ~/.claude or the plugin cache is so big, or asks for a Claude Code checkup or doctor pass - and at C4+ of any housekeeping pass.
+description: Keep the Claude Code harness itself clean - old sessions and transcripts (including projects whose folders no longer exist), auto-memory and CLAUDE.md bloat, stale or superseded memories, the plugin cache and unused or context-heavy plugins, duplicate skills, hooks, one-off or overly broad permission allowlist rules, MCP servers, background agents and scheduled tasks. Use this skill whenever the user says Claude feels slow or the context fills up fast, asks to clean up old sessions, prune memories, slim CLAUDE.md, review hooks or permissions, remove unused plugins or MCP servers, asks why ~/.claude or the plugin cache is so big, or asks for a Claude Code checkup or doctor pass - and at the Deep level of any housekeeping pass (user-wide items need machine scope).
 ---
 
 # harness-hygiene
@@ -40,7 +40,8 @@ That list is this skill's job.
 ## 2. Survey
 
 ```bash
-$HK plan --level C4 --domains harness --chosen-by "…"
+$HK plan --level deep --domains harness --chosen-by "…"               # this project: memory, CLAUDE.md, repo settings
+$HK plan --level deep --scope machine --domains harness --chosen-by "…"   # + plugin cache, deleted projects, user settings
 claude plugin list
 claude mcp list
 ```

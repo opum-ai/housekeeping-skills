@@ -28,23 +28,23 @@ outward.
 ## Survey
 
 ```bash
-$HK plan --level C3 --domains runtime --chosen-by "…"
+$HK plan --level standard --domains runtime --chosen-by "…"      # add --scope machine only when asked about the whole machine
 lsof -nP -iTCP -sTCP:LISTEN          # who holds which port (read-only)
 docker context show                  # hk inspects the active context only; say which
 ```
 
-| Kind | Evidence | Level | Class |
+| Kind | Evidence | Level, scope | Class |
 |---|---|---|---|
-| `process.session` | the provenance ledger recorded the command | C2 | S1 (SIGTERM; the undo is to re-run the recorded command) |
-| `process.orphan` | cwd inside this repo, and reparented to init (possibly through a shim or `npm → node` chain) | C3 | S2 |
+| `process.session` | the provenance ledger recorded the command | light, session | S1 (SIGTERM; the undo is to re-run the recorded command) |
+| `process.orphan` | cwd inside this repo, and reparented to init (possibly through a shim or `npm → node` chain) | standard, repo | S2 |
 | `process.live` | cwd inside this repo, with a live parent (a terminal, an editor) | finding | ask whose it is |
-| `process.orphan-foreign` | orphaned dev process outside this repo | C5 | S3 |
-| `container.running` | ledger, or the compose project matches this repo | C2 / C3 | S1 (stop; the undo is `docker start`) |
-| `container.stopped` | ledger or this project; C5 for others | C3 / C5 | S2 (its writable layer is gone) |
-| `image.unused` / `image.dangling` | not used by any container; project-named images at C4 | C4 / C5 | S2 |
-| `network.project` | compose project label | C4 | S1 |
-| `volume.project` / `volume.dangling` | compose label / no references | C4 / C5 | **S3**: volumes hold databases |
-| `docker.build-cache` | reclaimable | C5 | S2 |
+| `process.orphan-foreign` | orphaned dev process outside this repo | deep, **machine** | S3 |
+| `container.running` | ledger, or the compose project matches this repo | light / standard | S1 (stop; the undo is `docker start`) |
+| `container.stopped` | ledger or this project; others only at machine scope | standard / deep, **machine** | S2 (its writable layer is gone) |
+| `image.unused` / `image.dangling` | not used by any container; project-named at repo scope, others machine | deep | S2 |
+| `network.project` | compose project label | deep | S1 |
+| `volume.project` / `volume.dangling` | compose label / no references (machine) | deep | **S3**: volumes hold databases |
+| `docker.build-cache` | reclaimable | deep, **machine** | S2 |
 
 **Protected everywhere:**
 - containers and images in `[protect]`, including the built-in `opum-runner` and

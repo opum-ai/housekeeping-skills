@@ -48,7 +48,9 @@ The state is live and verifiable. Your memory of the session is neither.
 
 ## 2. Record, by level
 
-### C1 (every pass)
+### Minimal and Light (every pass)
+Minimal stops after the progress note: its only job is a recoverable stopping point. Light
+also updates the immediate issue: its criteria, references, and modified files.
 - **Progress note** on each task the session touched: what was established, what is
   blocked, and what is next. Reference things by id (commit, PR, doc) instead of pasting
   them.
@@ -62,7 +64,7 @@ The state is live and verifiable. Your memory of the session is neither.
 - `--add-reference <PR url>` and `--add-modified-file <path>` when they help the next
   reader.
 
-### C2
+### Standard (the default): the routine checklist
 - **Docs the session touched.**
   1. Find the related concepts with `lore query "<topic>" --limit 5`, then `lore read <id>`.
   2. Update the prose **outside** the managed blocks (`<!-- lore:… -->`). `lore sync`
@@ -76,7 +78,7 @@ The state is live and verifiable. Your memory of the session is neither.
   2. Write the criteria as outcomes someone else can verify.
   3. Link a dependency only when the new task truly blocks on it.
 
-### C3 (task finished)
+### Standard, when the task is finished
 - **Close the task in the PR that delivers its last criterion.**
   1. Check the criteria that the evidence proves.
   2. Run `quest task complete <id> --final-summary "<what, why, how verified: PR #N, CI run <id>>"`.
@@ -98,7 +100,7 @@ The state is live and verifiable. Your memory of the session is neither.
   change in a lore-coupled repo: the Story's task block goes stale the moment the task
   moves.
 
-### C4: two-way spec drift
+### Deep: outdated status, obsolete docs, two-way spec drift
 For each spec, Story, or ADR requirement the session's changes touch, compare it with the
 code. Resolve each mismatch in **one** of three ways, and say which:
 1. **Fix the code.** The spec is right. File or continue a task.
@@ -111,9 +113,15 @@ Never silently rewrite a spec to match the code. That erases the decision that s
 made. Tools that reconcile only one way (code catches up to spec, or spec catches up to
 code) are how drift hides.
 
-### C5
-Record the clean-room certificate from the tidy report on the task, as a note or in
-`--append-final-summary`.
+### Immaculate: a disposition for everything touched
+Every task and document the session touched gets an intentional disposition:
+- **landed**: completed, citing the PR and CI run;
+- **deferred**: to a named follow-up task;
+- **kept**: with the reason;
+- **accepted**: a known, deliberate state.
+
+Put the summary of the tidy report's disposition record on the task (as a note or with
+`--append-final-summary`), and the full record in the PR body.
 
 ## 3. Before reporting "nothing open"
 

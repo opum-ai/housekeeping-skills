@@ -1,6 +1,6 @@
 # housekeeping-skills
 
-**Housekeeping for agentic engineering, at the level of clean you ask for.** Six Claude
+**Project housekeeping for agentic engineering, at the level you ask for.** Six Claude
 Code skills and a small deterministic engine that clean up after coding agents safely:
 - record progress in the tracker and docs;
 - land the work in git;
@@ -8,7 +8,9 @@ Code skills and a small deterministic engine that clean up after coding agents s
 - clear junk, build outputs, caches, containers, and orphaned processes;
 - keep the Claude Code harness itself lean.
 
-The reach runs from the daily chores to a clean-room deep scrub.
+The levels run from saving a recoverable stopping point to an immaculate, fully accounted-for
+project. They cover housekeeping only (commits, branches, caches, containers, issue
+statuses, docs, and handoffs), not improving the code itself.
 
 **Status:** v0.1.0. Owned by [Opum AI](https://github.com/opum-ai), MIT licensed. It has
 native support for [quest](https://github.com/opum-ai/quest-cli) (tasks) and
@@ -30,26 +32,39 @@ force-removes worktrees without checking them for uncommitted work. Cleanup is a
 the worst agent incidents happen: two recent `rm -rf $HOME` cases came from test cleanup
 scripts.
 
-This plugin separates **how far** a pass reaches from **how each operation is gated**:
+This plugin keeps three things separate: **how much** housekeeping (the level), **where** (the scope), and **how each operation is gated** (its safety class):
 - it proves before it deletes;
 - it applies exactly the plan a person saw;
 - it keeps an undo journal.
 
-## Cleanliness levels
+## Housekeeping levels
 
-| Level | Name | Adds |
+| Level | Name | Meaning |
 |---|---|---|
-| **C1** | **Tidy** | Tracker progress note, logical commits on the task branch, push. Nothing is removed. |
-| **C2** | **Sweep** | This session's junk files, processes, and clean worktrees; the docs it touched; stash review. |
-| **C3** | **Clean** (task done) | Close the task in its PR, merge, prune landed branches (local and remote), worktrees, stale refs, this project's containers, orphaned processes in the repo; tracker/docs gates. |
-| **C4** | **Deep clean** | Build outputs, dependency dirs, project caches and images, old stashes, stale unlanded branches (archived first), `$TMPDIR` leaks, old session scratchpads, Claude Code harness debris and bloat. |
-| **C5** | **Clean room** | Checkout reset to fresh-clone state (minus a keep-list), global caches, machine Docker, then **prove it rebuilds from scratch** and certify what remains. |
+| **1** | **Minimal** | Preserve the work and record where things stand: a recoverable stopping point. |
+| **2** | **Light** | Put away what you just used: commit completed work, update the immediate issue, remove task-generated temp files. |
+| **3** | **Standard** (default) | The routine checklist: reconcile commits and issue statuses, update docs and handoff notes, remove known disposable artifacts (landed branches, this project's stopped containers, reviewed junk). |
+| **4** | **Deep** | The places routine housekeeping misses: stale branches and worktrees, disposable caches and build outputs, outdated statuses, obsolete docs, leftover artifacts, Claude Code debris. |
+| **5** | **Immaculate** | Deep, **plus verify the final state**. Every in-scope change, branch, issue, doc, and artifact has an intentional disposition. |
+
+**Immaculate means nothing left unattended, not nothing left on disk.** A kept `.env`, a
+`retain/` branch, or a task deferred to a follow-up is immaculate, as long as its
+disposition is stated. `hk disposition` checks this, and exits 0 only when nothing is
+unaccounted for.
+
+**Scope is a separate setting:**
+- `session`: only what this session created;
+- `repo` (the default): this repository and this project's containers, processes, and
+  Claude Code state;
+- `machine`: adds global caches, all of Docker, the plugin cache, and deleted projects'
+  transcripts.
+
+A deeper level never widens the scope: deep-cleaning the kitchen does not authorize
+remodeling the house. Other repositories' working trees are reported, never changed, in
+any scope.
 
 Every pass runs **record → land → clear → verify → report**. Recording comes first
 because clearing can destroy the evidence a record needs.
-
-Other repositories' working trees are reported, never changed, at any level. Each repo
-has one live session that owns it.
 
 ## Safety classes: independent of the level
 
@@ -81,10 +96,10 @@ only on a containment proof:
 
 | Skill | Role |
 |---|---|
-| **`tidy`** | The orchestrator. Picks the level from context ("wrap up" → C1, "PR merged" → C3, "deep clean" → C4), runs the phases in order, gates by class, and writes the report (and, at C5, the clean-room certificate). |
+| **`tidy`** | The orchestrator, also run by `/clean`. Picks the level and scope from context ("save where we are" → Minimal, "wrap up for today" → Light, "tidy up" or "PR merged" → Standard, "deep clean" → Deep, "leave it immaculate" → Immaculate). Runs the phases in order, gates by class, and writes the report; at Immaculate, it also writes the disposition record. |
 | **`session-sync`** | Record. Quest progress notes, criteria checked only with evidence, `quest task complete` with a final summary citing the PR and CI run, follow-up tasks, `lore sync`/`check`, and two-way spec-drift reconciliation (fix the code, amend the spec, or record a deviation). |
 | **`git-hygiene`** | Land and prune. Logical commits (no junk, no secrets), push, PR, merge, and promote (per `opum-sdlc`, or a generic flow); landed-branch, worktree, stash, and ref pruning through the engine. |
-| **`workspace-clean`** | Agent junk, `$TMPDIR` leaks (and their cause), build and dependency outputs, scratchpads, and clean-room resets. Never `git clean -X`. |
+| **`workspace-clean`** | Agent junk, `$TMPDIR` leaks (and their cause), build and dependency outputs, scratchpads, and Immaculate dispositions for leftovers. Never `git clean -X`. |
 | **`runtime-clean`** | Dev servers and orphaned processes the repo owns; this project's containers, images, networks, and volumes; build cache. Never the CI runner or someone's live terminal. |
 | **`harness-hygiene`** | Claude Code itself: `claude doctor`, transcripts of deleted projects (`claude project purge`), orphaned plugin versions and dead in-use markers, memory and CLAUDE.md bloat, one-off permission rule families, duplicate skills, hooks, MCP servers, background agents. |
 
@@ -95,7 +110,8 @@ only on a containment proof:
 ```text
 hk status              landing state: branch, trunk, ahead/behind, quest In Progress (+scope), lore check, open PRs
 hk inventory           everything found up to a level, classified (read-only)
-hk plan --level C3     a reviewable plan: items by class, findings, notes; saved as JSON
+hk plan --level standard --scope repo   a reviewable plan: items by class, findings, notes
+hk disposition --level immaculate       every in-scope item and its disposition; exit 0 = nothing unaccounted
 hk apply <plan>        executes exactly the plan: re-checks fingerprints (drift -> skipped), S2 needs
                        --approve-s2, S3 needs --confirm <id>; trash by default; journals every action
 hk undo <journal>      reverses S1 actions (branches, stashes, worktrees, trashed files, stopped containers)
@@ -127,30 +143,30 @@ Exit codes:
 
 Optional: copy `housekeeping.example.toml` to `.housekeeping.toml` at a repo's root to
 set level defaults, protected branches, paths, and containers, temp prefixes your tests
-leak, clean-room keep and verify commands, and provenance capture.
+leak, Immaculate keep-list and verify commands, and provenance capture.
 
 ## Usage
 
 Say it in words, or use the command. `/clean` takes the level as its argument:
 
 ```text
-/clean tidy        C1: note, logical commits, push
-/clean sweep       C2
-/clean done        C3: close the task, merge, prune landed branches
-/clean deep        C4
-/clean room        C5: clean room + rebuild proof
-/clean deep audit  read-only: show the C4 plan, change nothing
-/clean             infer the level from context
+/clean minimal           save a recoverable stopping point
+/clean light             put away what you just used (wrap-up)
+/clean                   Standard: the routine checklist (the default)
+/clean deep              the places routine housekeeping misses (this repo)
+/clean deep machine      ... including global caches, all Docker, ~/.claude
+/clean immaculate        Deep, plus a verified disposition for everything in scope
+/clean deep audit        read-only: show the Deep plan, change nothing
 ```
 
 Or just ask:
 
 ```text
-> wrap up for today                                  (C1: note, commits, push)
-> clean up after yourself                            (C2)
-> PR merged, close out HS-4 and tidy the branches    (C3)
-> my disk is full, deep clean but ask before anything scary   (C4)
-> make this repo a clean room before the release     (C5 + rebuild proof)
+> save where we are, context is almost full          (Minimal)
+> wrap up for today                                  (Light)
+> tidy up / PR merged, close out HS-4               (Standard)
+> deep clean this repo, ask before anything scary   (Deep)
+> leave it immaculate for the handover              (Immaculate)
 > port 3000 is in use and nothing should be running
 > audit my Claude Code setup: plugins, memory, permissions
 ```

@@ -7,7 +7,7 @@
       "name": "wrap-up",
       "expected_skill": "tidy",
       "prompt": "ok that's it for today, wrap up the session for me. repo is {FIXTURE}/repo, tracker is quest, you're acting on my behalf (I'm jdn).",
-      "expected_output": "C1 Tidy: parser work and README edit committed as separate logical commits on the task branch (not dev), junk not committed, branch pushed, quest progress note added, task left In Progress, .quest committed; nothing deleted.",
+      "expected_output": "Light (session end): parser work and README edit committed as separate logical commits on the task branch (not dev), junk not committed, branch pushed, quest progress note added, task left In Progress, .quest committed; nothing deleted.",
       "assertions": ["No tracked file is left modified or staged", "The task branch is pushed", "Nothing was committed to dev or main", "No agent junk was committed", "Parser work and the README edit were separate commits", "The quest task got a progress note", "The task is still In Progress", ".quest changes are committed"]
     },
     {

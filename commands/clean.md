@@ -1,6 +1,6 @@
 ---
-description: Housekeeping at a cleanliness level - /clean tidy | sweep | done | deep | room (or c1-c5); add "audit" for a read-only plan
-argument-hint: "[tidy|sweep|done|deep|room|c1-c5] [audit]"
+description: Project housekeeping at a level and scope - /clean minimal | light | standard | deep | immaculate [session|repo|machine] [audit]
+argument-hint: "[minimal|light|standard|deep|immaculate|1-5] [session|repo|machine] [audit]"
 ---
 
 ## Context
@@ -15,25 +15,30 @@ Run a housekeeping pass with the **tidy** skill from this plugin (Skill tool:
 `housekeeping-skills:tidy`, or `tidy`). Follow it exactly: record → land → clear → verify →
 report, gating every removal by its safety class.
 
-Map the arguments to a level. Matching is case-insensitive, and the first word that
-matches wins:
+Read the arguments case-insensitively. The first word that matches each column wins.
 
-| Argument | Level |
+| Level word | Level |
 |---|---|
-| `tidy`, `c1`, `wrap`, `wrap-up` | **C1 Tidy**: tracker note, logical commits, push; nothing removed |
-| `sweep`, `c2` | **C2 Sweep**: + this session's junk, processes, clean worktrees; the docs it touched |
-| `done`, `clean`, `finish`, `c3` | **C3 Clean**: + close the task, merge, prune landed branches and worktrees, project containers |
-| `deep`, `deep-clean`, `c4` | **C4 Deep clean**: + build outputs, deps, caches, stale branches (archived), temp leaks, harness debris |
-| `room`, `cleanroom`, `clean-room`, `scrub`, `pristine`, `c5` | **C5 Clean room**: + fresh-clone checkout, global caches, machine Docker, rebuild-from-scratch proof |
-| *(no level word)* | infer it from context, as the tidy skill describes, and say which level you chose and why |
+| `minimal`, `1`, `save`, `checkpoint` | **Minimal**: preserve the work and record where things stand |
+| `light`, `2`, `wrap`, `wrap-up` | **Light**: put away what you just used |
+| `standard`, `3`, `tidy`, `done`, `finish` | **Standard** (default): the routine checklist |
+| `deep`, `4` | **Deep**: the places routine housekeeping misses |
+| `immaculate`, `5`, `spotless`, `white-glove` | **Immaculate**: Deep, plus a verified disposition for every in-scope item |
+| *(none)* | infer the level from context, as the tidy skill describes, and say which you chose and why |
 
-If the arguments include **`audit`**, `plan`, `dry-run`, or `status`, stop after the survey:
-- run `hk status` and `hk plan` at the level;
+| Scope word | Scope |
+|---|---|
+| `session`, `mine` | only what this session created |
+| `repo` *(default)* | this repository and this project's containers, processes, and Claude Code state |
+| `machine`, `all`, `global` | + global caches, all Docker, the plugin cache, deleted projects' transcripts, user settings |
+
+If the arguments include `audit`, `plan`, `dry-run`, or `status`, stop after the survey:
+- run `hk status` and `hk plan --level <l> --scope <s>`;
 - show the plan table and the findings;
 - change nothing: no commits, no tracker writes, no removals.
 
-State the level and the reason in the first line, then proceed. Ask with AskUserQuestion
-only where the skill says to:
+State the level, the scope, and the reason in the first line, then proceed. Ask with
+AskUserQuestion only where the skill says to:
 - the S2 batch approval;
 - per-item S3 confirmation;
-- going above the level the user named.
+- going higher or wider than the user named.
