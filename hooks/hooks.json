@@ -1,0 +1,17 @@
+{
+  "description": "housekeeping-skills provenance capture: records what a session creates so cleanup can target exactly that. Opt-in per repo via .housekeeping.toml [provenance] enabled = true; a no-op otherwise. Always exits 0.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|NotebookEdit",
+        "hooks": [{ "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/capture.py\"", "timeout": 5 }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{ "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/capture.py\"", "timeout": 5 }]
+      }
+    ]
+  }
+}
