@@ -1,5 +1,4 @@
 ---
-# yaml-language-server: $schema=../../.lore/schemas/arc.schema.json
 type: Arc
 title: git-hygiene skill
 tags:
@@ -11,7 +10,7 @@ tasks:
 generated:
   by: lore/0.9.3
   at: 2026-09-27T03:24:32.078Z
-lore_task_status: todo
+lore_task_status: in-progress
 ---
 
 # git-hygiene skill
@@ -31,7 +30,7 @@ Land the session's work under the repository's SDLC, then prune only what contai
 <!-- lore:tasks:begin -->
 | Task | Title | Status |
 |---|---|---|
-| [HS-5](../../.quest/tasks/HS-5.json) | git-hygiene skill: stage, commit, push, PR, merge, promote, and prune branches, worktrees, stashes, and refs | To Do |
+| [HS-5](../../.quest/tasks/HS-5.json) | git-hygiene skill: stage, commit, push, PR, merge, promote, and prune branches, worktrees, stashes, and refs | In Progress |
 <!-- lore:tasks:end -->
 
 ## Notes

@@ -1,5 +1,4 @@
 ---
-# yaml-language-server: $schema=../../.lore/schemas/arc.schema.json
 type: Arc
 title: tidy orchestrator skill
 tags:
@@ -11,7 +10,7 @@ tasks:
 generated:
   by: lore/0.9.3
   at: 2026-09-27T03:24:32.000Z
-lore_task_status: todo
+lore_task_status: in-progress
 ---
 
 # tidy orchestrator skill
@@ -31,7 +30,7 @@ One entry point that picks a cleanliness level, runs survey, record, land, clear
 <!-- lore:tasks:begin -->
 | Task | Title | Status |
 |---|---|---|
-| [HS-4](../../.quest/tasks/HS-4.json) | Orchestrator skill: pick a cleanliness level, run the ladder in order record, land, clear, verify, and report | To Do |
+| [HS-4](../../.quest/tasks/HS-4.json) | Orchestrator skill: pick a cleanliness level, run the ladder in order record, land, clear, verify, and report | In Progress |
 <!-- lore:tasks:end -->
 
 ## Notes

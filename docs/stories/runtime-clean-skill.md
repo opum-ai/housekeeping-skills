@@ -1,5 +1,4 @@
 ---
-# yaml-language-server: $schema=../../.lore/schemas/arc.schema.json
 type: Arc
 title: runtime-clean skill
 tags:
@@ -11,7 +10,7 @@ tasks:
 generated:
   by: lore/0.9.3
   at: 2026-09-27T03:24:32.310Z
-lore_task_status: todo
+lore_task_status: in-progress
 ---
 
 # runtime-clean skill
@@ -31,7 +30,7 @@ Stop and remove the processes, servers and containers the work started, without 
 <!-- lore:tasks:begin -->
 | Task | Title | Status |
 |---|---|---|
-| [HS-8](../../.quest/tasks/HS-8.json) | runtime-clean skill: containers, images, volumes, networks, orphaned processes, ports, background tasks | To Do |
+| [HS-8](../../.quest/tasks/HS-8.json) | runtime-clean skill: containers, images, volumes, networks, orphaned processes, ports, background tasks | In Progress |
 <!-- lore:tasks:end -->
 
 ## Notes

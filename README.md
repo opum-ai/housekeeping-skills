@@ -131,6 +131,20 @@ leak, clean-room keep and verify commands, and provenance capture.
 
 ## Usage
 
+Say it in words, or use the command. `/clean` takes the level as its argument:
+
+```text
+/clean tidy        C1: note, logical commits, push
+/clean sweep       C2
+/clean done        C3: close the task, merge, prune landed branches
+/clean deep        C4
+/clean room        C5: clean room + rebuild proof
+/clean deep audit  read-only: show the C4 plan, change nothing
+/clean             infer the level from context
+```
+
+Or just ask:
+
 ```text
 > wrap up for today                                  (C1: note, commits, push)
 > clean up after yourself                            (C2)

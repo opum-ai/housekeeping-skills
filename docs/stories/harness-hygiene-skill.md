@@ -1,5 +1,4 @@
 ---
-# yaml-language-server: $schema=../../.lore/schemas/arc.schema.json
 type: Arc
 title: harness-hygiene skill
 tags:
@@ -11,7 +10,7 @@ tasks:
 generated:
   by: lore/0.9.3
   at: 2026-09-27T03:24:32.388Z
-lore_task_status: todo
+lore_task_status: in-progress
 ---
 
 # harness-hygiene skill
@@ -31,7 +30,7 @@ Audit and clear the Claude Code harness debris that the built-in retention sweep
 <!-- lore:tasks:begin -->
 | Task | Title | Status |
 |---|---|---|
-| [HS-9](../../.quest/tasks/HS-9.json) | harness-hygiene skill: Claude Code sessions, transcripts, memory, CLAUDE.md, plugins, hooks, permissions, MCP, worktrees | To Do |
+| [HS-9](../../.quest/tasks/HS-9.json) | harness-hygiene skill: Claude Code sessions, transcripts, memory, CLAUDE.md, plugins, hooks, permissions, MCP, worktrees | In Progress |
 <!-- lore:tasks:end -->
 
 ## Notes

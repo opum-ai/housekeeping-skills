@@ -1,5 +1,4 @@
 ---
-# yaml-language-server: $schema=../../.lore/schemas/arc.schema.json
 type: Arc
 title: session-sync skill
 tags:
@@ -11,7 +10,7 @@ tasks:
 generated:
   by: lore/0.9.3
   at: 2026-09-27T03:24:32.154Z
-lore_task_status: todo
+lore_task_status: in-progress
 ---
 
 # session-sync skill
@@ -31,7 +30,7 @@ Make the tracker and docs tell the truth about what the session did, before anyt
 <!-- lore:tasks:begin -->
 | Task | Title | Status |
 |---|---|---|
-| [HS-6](../../.quest/tasks/HS-6.json) | session-sync skill: reconcile quest tasks and lore docs with what the session did, including two-way spec drift | To Do |
+| [HS-6](../../.quest/tasks/HS-6.json) | session-sync skill: reconcile quest tasks and lore docs with what the session did, including two-way spec drift | In Progress |
 <!-- lore:tasks:end -->
 
 ## Notes
