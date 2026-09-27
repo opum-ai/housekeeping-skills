@@ -1,0 +1,34 @@
+[
+  {
+    "query": "port 3000 is already in use and I don't have any terminal running a server, find it and kill it",
+    "should_trigger": true
+  },
+  {
+    "query": "stop all the dev servers and background processes you started this session",
+    "should_trigger": true
+  },
+  {
+    "query": "docker is eating 40GB, prune the images and containers from this project but leave the CI runner alone",
+    "should_trigger": true
+  },
+  {
+    "query": "there are like 16 orphaned `quest browser` node processes running for days, clean them up",
+    "should_trigger": true
+  },
+  {
+    "query": "shut everything down for this project \u2014 compose stack, watchers, all of it",
+    "should_trigger": true
+  },
+  {
+    "query": "write a docker-compose.yml for postgres + redis + my node api",
+    "should_trigger": false
+  },
+  {
+    "query": "my docker build is slow, how do I use layer caching better?",
+    "should_trigger": false
+  },
+  {
+    "query": "how do I run a background job in node every 5 minutes?",
+    "should_trigger": false
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "query": "update QCLI-88 with what we did today and check off whatever criteria we actually proved",
+    "should_trigger": true
+  },
+  {
+    "query": "HS-4 is finished, close it out properly and sync the lore story",
+    "should_trigger": true
+  },
+  {
+    "query": "the spec in docs/specs/auth.md doesn't match what we built anymore, reconcile them",
+    "should_trigger": true
+  },
+  {
+    "query": "leave good notes on the task for whoever picks this up next session",
+    "should_trigger": true
+  },
+  {
+    "query": "record progress on the tracker before I lose this context, we figured out the race condition is in the lease renewal",
+    "should_trigger": true
+  },
+  {
+    "query": "create a new quest task for adding rate limiting to the API with some acceptance criteria",
+    "should_trigger": false
+  },
+  {
+    "query": "write docs for the public REST API in openapi format",
+    "should_trigger": false
+  },
+  {
+    "query": "summarize this PR's diff for the release notes",
+    "should_trigger": false
+  }
+]

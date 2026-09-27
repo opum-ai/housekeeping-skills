@@ -1,0 +1,50 @@
+{
+  "expectations": [
+    {
+      "text": "Nothing in the Claude config dir was changed (audit only)",
+      "passed": true,
+      "evidence": "unchanged"
+    },
+    {
+      "text": "Flags the orphaned plugin version",
+      "passed": true,
+      "evidence": ""
+    },
+    {
+      "text": "Flags the stale in-use markers of dead processes",
+      "passed": true,
+      "evidence": ""
+    },
+    {
+      "text": "Flags transcripts of a project whose folder is gone (claude project purge)",
+      "passed": true,
+      "evidence": ""
+    },
+    {
+      "text": "Flags the family of per-repo gh api rulesets rules for consolidation",
+      "passed": true,
+      "evidence": ""
+    },
+    {
+      "text": "Flags Bash(rm:*) as overly broad",
+      "passed": true,
+      "evidence": ""
+    },
+    {
+      "text": "Flags the oversized MEMORY.md or CLAUDE.md",
+      "passed": true,
+      "evidence": ""
+    },
+    {
+      "text": "Flags the superseded memory",
+      "passed": true,
+      "evidence": ""
+    }
+  ],
+  "summary": {
+    "passed": 8,
+    "failed": 0,
+    "total": 8,
+    "pass_rate": 1.0
+  }
+}

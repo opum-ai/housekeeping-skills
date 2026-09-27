@@ -1,0 +1,34 @@
+[
+  {
+    "query": "claude code feels sluggish and context fills up fast, audit my setup \u2014 plugins, CLAUDE.md, memory, mcp servers",
+    "should_trigger": true
+  },
+  {
+    "query": "my settings.local.json has like 200 permission rules from one-off approvals, clean it up",
+    "should_trigger": true
+  },
+  {
+    "query": "~/.claude is 4GB, what can I safely delete?",
+    "should_trigger": true
+  },
+  {
+    "query": "prune my claude memories, half of them are outdated",
+    "should_trigger": true
+  },
+  {
+    "query": "which of my installed plugins are costing the most context and which do I never use?",
+    "should_trigger": true
+  },
+  {
+    "query": "how do I write a PreToolUse hook that blocks rm -rf?",
+    "should_trigger": false
+  },
+  {
+    "query": "add an MCP server for our postgres database to this project",
+    "should_trigger": false
+  },
+  {
+    "query": "write a CLAUDE.md for this repo explaining the build and test commands",
+    "should_trigger": false
+  }
+]

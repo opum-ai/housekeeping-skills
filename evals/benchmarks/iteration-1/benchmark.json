@@ -1,0 +1,674 @@
+{
+  "metadata": {
+    "skill_name": "housekeeping-skills",
+    "skill_path": "<path/to/skill>",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-09-27T03:51:41Z",
+    "evals_run": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 10,
+        "failed": 0,
+        "total": 10,
+        "time_seconds": 100.3,
+        "tokens": 50177,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Merged branch feat/merged was deleted locally",
+          "passed": true,
+          "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+        },
+        {
+          "text": "Squash-merged branch feat/squashed was deleted locally",
+          "passed": true,
+          "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+        },
+        {
+          "text": "Landed remote branch origin/feat/merged was deleted",
+          "passed": true,
+          "evidence": "['dev', 'main']"
+        },
+        {
+          "text": "Unlanded branch feat/unlanded was kept",
+          "passed": true,
+          "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+        },
+        {
+          "text": "feat/gone (upstream deleted but never merged) was kept",
+          "passed": true,
+          "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+        },
+        {
+          "text": "retain/perf-experiment was kept",
+          "passed": true,
+          "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+        },
+        {
+          "text": "The dirty worktree and its uncommitted wip.py survive",
+          "passed": true,
+          "evidence": "/private/tmp/claude-501/-Volumes-external-repos-housekeeping-skills/88482b1c-3570-4612-a5d0-34d34963c60a/scratchpad/hk-workspace/iteration-1/eval-branch-cleanup/with_skill/run-1/fixture/wt-dirty/wip.py"
+        },
+        {
+          "text": "The clean worktree was removed",
+          "passed": true,
+          "evidence": "/private/tmp/claude-501/-Volumes-external-repos-housekeeping-skills/88482b1c-3570-4612-a5d0-34d34963c60a/scratchpad/hk-workspace/iteration-1/eval-branch-cleanup/with_skill/run-1/fixture/wt-clean"
+        },
+        {
+          "text": "dev and main were not modified",
+          "passed": true,
+          "evidence": "unchanged"
+        },
+        {
+          "text": "The summary flags feat/gone and feat/unlanded for a human decision",
+          "passed": true,
+          "evidence": "both named"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 211.9,
+        "tokens": 78609,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Resolved correctly: closed with every AC true, left open with the failing AC explained, or closed with it unresolved plus a follow-up task",
+          "passed": true,
+          "evidence": "status=Done strips=False flagged=True followup=True"
+        },
+        {
+          "text": "If closed, it was via `quest task complete` (record moved to .quest/completed)",
+          "passed": true,
+          "evidence": "['DEMO-1.json']"
+        },
+        {
+          "text": "If closed, the final summary cites test evidence; if open, a note records the evidence",
+          "passed": true,
+          "evidence": "What: added slugify(title) in slug.py (lowercases, strips ',' and '.', joins whitespace-separated words with '-') plus test_slug.py (test_basic, test_commas). Why: URL slugs for page titles (story sto"
+        },
+        {
+          "text": "AC 'strips all punctuation' is checked only if it is actually true",
+          "passed": true,
+          "evidence": "checked=False slugify('Hello, World!')='{\"schemaVersion\":1,\"contractVersion\":1,\"kind\":\"task.list\",\"data\":[{\"id\":\"DEMO-1\",\"aliases\":[],\"title\":\"Add a slugify helper\",\"status\":\"Done\",\"description\":\"URL slugs for titles\",\"acceptanceCriteria\":[{\"index\":0,\"text\":\"slugify lowercases and joins words with hyphens\",\"checked\":true,\"position\":1},{\"index\":1,\"text\":\"slugify strips all punctuation\",\"checked\":false,\"position\":2},{\"index\":2,\"text\":\"unit tests pass\",\"checked\":true,\"position\":3}],\"definitionOfDon"
+        },
+        {
+          "text": "lore check exits 0",
+          "passed": true,
+          "evidence": "exit 0"
+        },
+        {
+          "text": "The Story's task table shows the task's real status",
+          "passed": true,
+          "evidence": "| [DEMO-1](../../.quest/completed/DEMO-1.json) | Add a slugify helper | Done |"
+        },
+        {
+          "text": "Tracker and docs changes are committed",
+          "passed": true,
+          "evidence": "clean"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 9,
+        "failed": 0,
+        "total": 9,
+        "time_seconds": 112.0,
+        "tokens": 55866,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "node_modules/ was removed",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "dist/ was removed",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "__pycache__/ and .pytest_cache/ were removed",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": ".env survives unchanged",
+          "passed": true,
+          "evidence": "present"
+        },
+        {
+          "text": "Tracked legacy.bak survives",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "parser_v2.py (untracked but imported by main.py) survives",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": ".idea/ (local IDE config, not a build output) survives",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Non-regenerable junk was not permanently deleted (kept, or moved to the Trash)",
+          "passed": true,
+          "evidence": "ok"
+        },
+        {
+          "text": "The report lists the non-regenerable files for the user's decision",
+          "passed": true,
+          "evidence": "['notes-0a6a1e.bak', 'scratch-0a6a1e.py', 'IMPLEMENTATION_SUMMARY-0a6a1e.md']"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 5,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 144.8,
+        "tokens": 57227,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Nothing in the Claude config dir was changed (audit only)",
+          "passed": true,
+          "evidence": "unchanged"
+        },
+        {
+          "text": "Flags the orphaned plugin version",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags the stale in-use markers of dead processes",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags transcripts of a project whose folder is gone (claude project purge)",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags the family of per-repo gh api rulesets rules for consolidation",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags Bash(rm:*) as overly broad",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags the oversized MEMORY.md or CLAUDE.md",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags the superseded memory",
+          "passed": true,
+          "evidence": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 121.1,
+        "tokens": 67452,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "No tracked file is left modified or staged",
+          "passed": true,
+          "evidence": "clean"
+        },
+        {
+          "text": "The task branch is pushed (remote tip equals local tip)",
+          "passed": true,
+          "evidence": "82e0c767d955494a61e3f45e764d5d74eb81392c vs 82e0c767d955494a61e3f45e764d5d74eb81392c"
+        },
+        {
+          "text": "Nothing was committed to dev or main",
+          "passed": true,
+          "evidence": "dev unchanged"
+        },
+        {
+          "text": "No agent junk (debug.log, *.bak, scratch_test.py, IMPLEMENTATION_SUMMARY.md) was committed",
+          "passed": true,
+          "evidence": "none committed"
+        },
+        {
+          "text": "Parser work and the README edit were committed as separate logical commits",
+          "passed": true,
+          "evidence": "separate"
+        },
+        {
+          "text": "The quest task got a progress note",
+          "passed": true,
+          "evidence": "1 note(s)"
+        },
+        {
+          "text": "The task is still In Progress (a wrap-up is not a completion)",
+          "passed": true,
+          "evidence": "In Progress"
+        },
+        {
+          "text": ".quest changes are committed (tracker travels with the code)",
+          "passed": true,
+          "evidence": "?? .claude/housekeeping/\n?? IMPLEMENTATION_SUMMARY.md\n?? scratch_test.py\n?? src/csvparse.py.bak"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.9,
+        "passed": 9,
+        "failed": 1,
+        "total": 10,
+        "time_seconds": 75.0,
+        "tokens": 38841,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Merged branch feat/merged was deleted locally",
+          "passed": true,
+          "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+        },
+        {
+          "text": "Squash-merged branch feat/squashed was deleted locally",
+          "passed": true,
+          "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+        },
+        {
+          "text": "Landed remote branch origin/feat/merged was deleted",
+          "passed": false,
+          "evidence": "['dev', 'feat/merged', 'main']"
+        },
+        {
+          "text": "Unlanded branch feat/unlanded was kept",
+          "passed": true,
+          "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+        },
+        {
+          "text": "feat/gone (upstream deleted but never merged) was kept",
+          "passed": true,
+          "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+        },
+        {
+          "text": "retain/perf-experiment was kept",
+          "passed": true,
+          "evidence": "['dev', 'feat/gone', 'feat/unlanded', 'feat/wt-dirty', 'main', 'retain/perf-experiment']"
+        },
+        {
+          "text": "The dirty worktree and its uncommitted wip.py survive",
+          "passed": true,
+          "evidence": "/private/tmp/claude-501/-Volumes-external-repos-housekeeping-skills/88482b1c-3570-4612-a5d0-34d34963c60a/scratchpad/hk-workspace/iteration-1/eval-branch-cleanup/without_skill/run-1/fixture/wt-dirty/wip.py"
+        },
+        {
+          "text": "The clean worktree was removed",
+          "passed": true,
+          "evidence": "/private/tmp/claude-501/-Volumes-external-repos-housekeeping-skills/88482b1c-3570-4612-a5d0-34d34963c60a/scratchpad/hk-workspace/iteration-1/eval-branch-cleanup/without_skill/run-1/fixture/wt-clean"
+        },
+        {
+          "text": "dev and main were not modified",
+          "passed": true,
+          "evidence": "unchanged"
+        },
+        {
+          "text": "The summary flags feat/gone and feat/unlanded for a human decision",
+          "passed": true,
+          "evidence": "both named"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 90.7,
+        "tokens": 50623,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Resolved correctly: closed with every AC true, left open with the failing AC explained, or closed with it unresolved plus a follow-up task",
+          "passed": true,
+          "evidence": "status=In Progress strips=False flagged=True followup=False"
+        },
+        {
+          "text": "If closed, it was via `quest task complete` (record moved to .quest/completed)",
+          "passed": true,
+          "evidence": "[]"
+        },
+        {
+          "text": "If closed, the final summary cites test evidence; if open, a note records the evidence",
+          "passed": true,
+          "evidence": "Close-out review 2026-09-26 (claude for jdn): AC1 verified - slugify('Hello World') == 'hello-world' (test_basic passes). AC3 verified - test_basic and test_commas both pass (python3, pytest not insta"
+        },
+        {
+          "text": "AC 'strips all punctuation' is checked only if it is actually true",
+          "passed": true,
+          "evidence": "checked=False slugify('Hello, World!')='{\"schemaVersion\":1,\"contractVersion\":1,\"kind\":\"task.list\",\"data\":[{\"id\":\"DEMO-1\",\"aliases\":[],\"title\":\"Add a slugify helper\",\"status\":\"In Progress\",\"description\":\"URL slugs for titles\",\"acceptanceCriteria\":[{\"index\":0,\"text\":\"slugify lowercases and joins words with hyphens\",\"checked\":true,\"position\":1},{\"index\":1,\"text\":\"slugify strips all punctuation\",\"checked\":false,\"position\":2},{\"index\":2,\"text\":\"unit tests pass\",\"checked\":true,\"position\":3}],\"definiti"
+        },
+        {
+          "text": "lore check exits 0",
+          "passed": true,
+          "evidence": "exit 0"
+        },
+        {
+          "text": "The Story's task table shows the task's real status",
+          "passed": true,
+          "evidence": "| [DEMO-1](../../.quest/tasks/DEMO-1.json) | Add a slugify helper | In Progress |"
+        },
+        {
+          "text": "Tracker and docs changes are committed",
+          "passed": true,
+          "evidence": "clean"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 9,
+        "failed": 0,
+        "total": 9,
+        "time_seconds": 72.6,
+        "tokens": 39209,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "node_modules/ was removed",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "dist/ was removed",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "__pycache__/ and .pytest_cache/ were removed",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": ".env survives unchanged",
+          "passed": true,
+          "evidence": "present"
+        },
+        {
+          "text": "Tracked legacy.bak survives",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "parser_v2.py (untracked but imported by main.py) survives",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": ".idea/ (local IDE config, not a build output) survives",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Non-regenerable junk was not permanently deleted (kept, or moved to the Trash)",
+          "passed": true,
+          "evidence": "ok"
+        },
+        {
+          "text": "The report lists the non-regenerable files for the user's decision",
+          "passed": true,
+          "evidence": "['notes-0c2325.bak', 'scratch-0c2325.py', 'IMPLEMENTATION_SUMMARY-0c2325.md']"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 5,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 110.8,
+        "tokens": 52137,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Nothing in the Claude config dir was changed (audit only)",
+          "passed": true,
+          "evidence": "unchanged"
+        },
+        {
+          "text": "Flags the orphaned plugin version",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags the stale in-use markers of dead processes",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags transcripts of a project whose folder is gone (claude project purge)",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags the family of per-repo gh api rulesets rules for consolidation",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags Bash(rm:*) as overly broad",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags the oversized MEMORY.md or CLAUDE.md",
+          "passed": true,
+          "evidence": ""
+        },
+        {
+          "text": "Flags the superseded memory",
+          "passed": true,
+          "evidence": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.88,
+        "passed": 7,
+        "failed": 1,
+        "total": 8,
+        "time_seconds": 117.3,
+        "tokens": 47723,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "No tracked file is left modified or staged",
+          "passed": true,
+          "evidence": "clean"
+        },
+        {
+          "text": "The task branch is pushed (remote tip equals local tip)",
+          "passed": true,
+          "evidence": "35e3b556342a5c487bd694173d36d8532eb17bbe vs 35e3b556342a5c487bd694173d36d8532eb17bbe"
+        },
+        {
+          "text": "Nothing was committed to dev or main",
+          "passed": true,
+          "evidence": "dev unchanged"
+        },
+        {
+          "text": "No agent junk (debug.log, *.bak, scratch_test.py, IMPLEMENTATION_SUMMARY.md) was committed",
+          "passed": true,
+          "evidence": "none committed"
+        },
+        {
+          "text": "Parser work and the README edit were committed as separate logical commits",
+          "passed": false,
+          "evidence": "mixed commits: ['d62a02020f71b2dbfee7c3c280839cb7f5f1af2a']"
+        },
+        {
+          "text": "The quest task got a progress note",
+          "passed": true,
+          "evidence": "1 note(s)"
+        },
+        {
+          "text": "The task is still In Progress (a wrap-up is not a completion)",
+          "passed": true,
+          "evidence": "In Progress"
+        },
+        {
+          "text": ".quest changes are committed (tracker travels with the code)",
+          "passed": true,
+          "evidence": "?? IMPLEMENTATION_SUMMARY.md\n?? scratch_test.py\n?? src/csvparse.py.bak"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 138.02,
+        "stddev": 44.4138,
+        "min": 100.3,
+        "max": 211.9
+      },
+      "tokens": {
+        "mean": 61866.2,
+        "stddev": 11243.7148,
+        "min": 50177,
+        "max": 78609
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.956,
+        "stddev": 0.0607,
+        "min": 0.88,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 93.28,
+        "stddev": 20.3248,
+        "min": 72.6,
+        "max": 117.3
+      },
+      "tokens": {
+        "mean": 45706.6,
+        "stddev": 6303.6135,
+        "min": 38841,
+        "max": 52137
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.04",
+      "time_seconds": "+44.7",
+      "tokens": "+16160"
+    }
+  },
+  "notes": [
+    "Baseline (Opus 5.5, no plugin) is strong: 45/47. Most assertions are non-discriminating; the +4pp comes from 2 assertions (landed remote branch deleted; parser and README edits committed separately).",
+    "Cost: with-skill runs used ~35% more tokens and ~48% more time (they read skills, run hk plan/apply, and write structured reports with journals).",
+    "Qualitative gains not captured by assertions: every with-skill removal is journalled with undo; reports state the level and why; the close-task run filed a follow-up task carrying the unmet AC and recorded a deviation in the Story.",
+    "Engine defects found by these runs (fixed after iteration 1): hk wrote plans/journals into <repo>/.claude/housekeeping (untracked litter) -> moved to .git/housekeeping; a landed branch held by a clean worktree needed a second pass -> worktrees now apply first; claude project purge silently no-ops when the project dir name is not the path slug -> slug verified, fallback trash (S3).",
+    "Grader fixes during iteration 1: close-task accepts three legitimate outcomes; harness-audit ignores .claude.json/backups that any claude launch creates.",
+    "Next iteration should add discriminating cases: many squash-merged branches after dev moved on, a stale-looking-but-unlanded branch, a C5 clean room with rebuild proof, and a sandboxed runtime case."
+  ]
+}
