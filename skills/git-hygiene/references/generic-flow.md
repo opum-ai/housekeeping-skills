@@ -39,4 +39,9 @@ branch off origin/<trunk> -> commit in logical units -> push -u -> PR into <trun
   away on fetch.
 - Branch protection on the release branch: required checks, no force pushes.
 
+- **A ruleset protecting the trunk and release branches from deletion and non-fast-forward
+  pushes.** Without it, `delete_branch_on_merge` deletes `dev` the first time a `dev`→`main`
+  promotion PR is recorded as merged, because `dev` is that PR's head branch. This was
+  observed on this plugin's own first release.
+
 None of these deletes the **local** branch after a merge. That step is always manual.

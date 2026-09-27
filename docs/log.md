@@ -9,6 +9,7 @@
 - 2026-09-27T09:27:12-05:00 11a32fda4faf8e264a98ba4bf91ea23ce7616f73 HS-1: record iteration-2 evidence on HS-3..HS-13
 - 2026-09-27T09:27:12-05:00 6e70e3ad3ab3c15463bc6fe6756cc7dcd7f99b8d HS-13: spec 'Housekeeping levels', ADR-0006, story, docs sweep; lore 0.11.0 schema export; quest ACs reworded (skill AC2 unchecked pending re-verification)
 - 2026-09-27T09:27:12-05:00 ae1fa696f6a01aae01ca1bf176293795dde81718 HS-1: record evidence on HS-2..HS-12 (ACs checked only with evidence; HS-8 eval AC left open with reason); README /clean usage
+- 2026-09-27T09:55:04-05:00 6a0cfdc98da2ae23f6ed754856f4756a0527968b HS-1: housekeeping-skills 0.1.0 (#1)
 
 ## docs/reference
 
