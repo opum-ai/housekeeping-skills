@@ -5,6 +5,7 @@
 - [git-hygiene skill](git-hygiene-skill.md)
 - [harness-hygiene skill](harness-hygiene-skill.md)
 - [hk plan-apply engine](hk-plan-apply-engine.md)
+- [Housekeeping levels Minimal to Immaculate](housekeeping-levels-minimal-to-immaculate.md)
 - [Plugin packaging](plugin-packaging.md)
 - [Provenance capture hook](provenance-capture-hook.md)
 - [runtime-clean skill](runtime-clean-skill.md)

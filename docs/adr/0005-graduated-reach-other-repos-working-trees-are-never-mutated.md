@@ -17,6 +17,8 @@ generated:
 
 Accepted (2026-09-26). Decided by the user.
 
+Superseded in part by [ADR-0006](0006-housekeeping-levels-minimal-to-immaculate-with-scope-as-a-separate-setting.md): the reach table below is replaced by a separate scope setting; the rule that other repos' working trees are never mutated stands.
+
 ## Context
 
 A deep clean is tempting to run machine-wide. The measured debris on one machine was
@@ -41,7 +43,7 @@ Docker, the user-level harness.
 ## Decision
 
 Each level has a **reach**: the set of places it may mutate. Reach widens with the level
-([R-2](../specs/cleanliness-levels.md#r-2-levels-are-cumulative-and-scoped-by-reach)):
+([R-2](../specs/cleanliness-levels.md#r-2-levels-are-cumulative-scope-is-a-separate-setting)):
 
 | Level | Adds to reach |
 |---|---|

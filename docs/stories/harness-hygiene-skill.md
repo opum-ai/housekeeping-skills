@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=../../.lore/schemas/arc.schema.json
 type: Arc
 title: harness-hygiene skill
 tags:
@@ -22,7 +23,7 @@ Audit and clear the Claude Code harness debris that the built-in retention sweep
 ## Acceptance criteria
 
 - `skills/harness-hygiene/SKILL.md` exists with a name and a trigger-oriented description, under 500 lines
-- The skill states its behaviour at each cleanliness level, C1 to C5, and never runs an S3 action without explicit per-item user confirmation
+- The skill states its behaviour at the housekeeping levels (Minimal to Immaculate) and scopes (session, repo, machine) it acts at, and never runs an S3 action without explicit user confirmation.
 - skill-creator eval runs with and without the skill are recorded under `evals/` with graded assertions
 
 ## Tasks
@@ -39,9 +40,11 @@ Part of [Housekeeping for agentic engineering](../epics/housekeeping-for-agentic
 
 - S0 probes: `claude doctor`, `claude plugin list`, `claude plugin details <name>` for
   context cost. `/doctor` is user-invoked, so the skill recommends it rather than runs it.
-- C4 clears: old session scratchpads and orphaned plugin-cache versions (S2); transcripts
-  of deleted project paths via `claude project purge --dry-run` first (S3).
-- C4 proposes, applied only on approval: memory, CLAUDE.md, permission and hook hygiene.
+- Deep, at repo scope, clears this project's old session scratchpads (S2) and proposes,
+  applied only on approval: memory, CLAUDE.md, permission, hook and plugin hygiene.
+- Machine scope only, at Deep and above: orphaned plugin-cache versions and dead in-use
+  markers (S2); other projects' scratchpads (S2); transcripts of deleted project paths via
+  `claude project purge --dry-run` first (S3); user settings findings.
 - Never the current session's transcript or scratchpad, or managed settings.
 - What `cleanupPeriodDays` does and does not sweep is summarised in
   [State of the art](../reference/state-of-the-art-in-agentic-housekeeping.md#5-claude-codes-built-in-hygiene-surface).

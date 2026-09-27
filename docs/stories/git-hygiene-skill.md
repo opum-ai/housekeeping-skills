@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=../../.lore/schemas/arc.schema.json
 type: Arc
 title: git-hygiene skill
 tags:
@@ -22,7 +23,7 @@ Land the session's work under the repository's SDLC, then prune only what contai
 ## Acceptance criteria
 
 - `skills/git-hygiene/SKILL.md` exists with a name and a trigger-oriented description, under 500 lines
-- The skill states its behaviour at each cleanliness level, C1 to C5, and never runs an S3 action without explicit per-item user confirmation
+- The skill states its behaviour at the housekeeping levels (Minimal to Immaculate) and scopes (session, repo, machine) it acts at, and never runs an S3 action without explicit user confirmation.
 - skill-creator eval runs with and without the skill are recorded under `evals/` with graded assertions
 
 ## Tasks
@@ -37,11 +38,19 @@ Land the session's work under the repository's SDLC, then prune only what contai
 
 Part of [Housekeeping for agentic engineering](../epics/housekeeping-for-agentic-engineering.md).
 
-- Land: logical commits and push (C1), open or refresh the PR (C2), squash-merge when
-  green and promote only on request (C3). Policy comes from `opum-sdlc` when installed
+- Land: preserve the work with a commit (WIP if needed) on the task branch and push
+  (Minimal); commit completed work in logical units and push (Light); open or refresh the
+  PR, merge when checks are green, delete the local branch after its merge, and promote
+  only on request (Standard); verify every branch is pushed, landed or deferred
+  (Immaculate). Policy comes from `opum-sdlc` when installed
   ([ADR-0002](../adr/0002-defer-branch-pr-and-promotion-policy-to-opum-sdlc.md)).
-- Clear: landed branches local and remote, prunable worktrees and stale refs (C3); stale
-  unlanded branches archived then deleted, and old stashes exported then dropped (C4).
+- Clear: this session's clean worktrees (Light, S1); landed branches local and remote,
+  prunable worktrees and clean worktrees of landed branches (Standard, S1); stale unlanded
+  branches archived then deleted (Deep, S3), other clean worktrees and old stashes archived
+  then dropped (Deep, S1).
+- All of this is repo-scoped. Other repositories' branches and worktrees are reported,
+  never mutated, at any level or scope
+  ([ADR-0005](../adr/0005-graduated-reach-other-repos-working-trees-are-never-mutated.md)).
 - A branch is landed only on a proof from
   [R-5](../specs/cleanliness-levels.md#r-5-a-branch-with-unique-commits-is-unlanded-work-not-clutter): ancestry,
   squash equivalence, or a merged PR, after a fresh `fetch --prune`. "Upstream gone" is

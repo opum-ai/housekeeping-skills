@@ -1,42 +1,63 @@
 ---
 # yaml-language-server: $schema=../../.lore/schemas/spec.schema.json
 type: Spec
-title: Cleanliness levels
+title: Housekeeping levels
 tags:
   - housekeeping
   - levels
   - safety
 status: draft
-summary: Five cumulative cleanliness levels, C1 Tidy to C5 Clean room, crossed with four per-operation safety classes S0-S3, a protected set, and graduated reach.
+summary: "Five cumulative housekeeping levels, Minimal to Immaculate (default Standard), with scope (session, repo, machine) as a separate setting and four per-operation safety classes S0-S3."
 generated:
   by: lore/0.9.3
   at: 2026-09-27T03:21:58.931Z
 ---
 
-# Cleanliness levels
+# Housekeeping levels
 
 ## Summary
 
-Housekeeping has two independent dials. Every skill in this plugin reads both.
+This plugin does **project housekeeping**: commits, branches, worktrees, caches, containers,
+issue statuses, documentation, and handoffs. It does **not** improve the code itself.
+Formatting, dead code, and refactors belong to other tools.
 
-- **The cleanliness level (C1-C5)** says *how far* a pass reaches. It runs from the
-  daily chore of recording and committing up to a clean-room deep scrub. Choosing a
-  higher level widens what is in scope. Each level includes everything below it.
-- **The safety class (S0-S3)** says *how each individual operation is gated*. It is a
-  property of the operation and its evidence, never of the level. A C5 pass does not make
-  an irreversible deletion any less irreversible, so it does not remove the confirmation.
+Three independent settings govern every pass. Every skill reads all three:
 
-| Level | Name | One line |
+- **The housekeeping level** (`housekeeping_level`) says *how much* housekeeping to do.
+  Each level includes everything below it.
+- **The scope** (`housekeeping_scope`: `session | repo | machine`) says *where* the pass
+  may act. Scope is independent of level: deep-cleaning the kitchen does not authorize
+  remodeling the house.
+- **The safety class** (S0-S3) of each operation says *how it is gated*. It is a property of
+  the operation and its evidence, never of the level or the scope.
+
+| Level | Name | Meaning for project housekeeping |
 |---|---|---|
-| **C1** | **Tidy** | Record progress and land the work: tracker notes, logical commits, push. Touches only this session's work. |
-| **C2** | **Sweep** | Also clear what this session left lying around: its junk files, its processes and dev servers, its clean worktrees, and the docs it touched. |
-| **C3** | **Clean** | Also finish the task and prune what it leaves behind: merge per the SDLC, prune landed branches, prunable worktrees, stale refs, this project's containers, and orphaned processes in the repo. Run the tracker and docs gates. |
-| **C4** | **Deep clean** | Also reclaim regenerable weight: build outputs, dependency dirs, project caches, project Docker images, old stashes, stale branches (archived first), and user-level agent-harness debris. |
-| **C5** | **Clean room** | Also reset the checkout to fresh-clone state, prune global caches and Docker, then **prove** it rebuilds from scratch and certify what remains. |
+| **1** | **Minimal** | Preserve the work and record where things stand. Do only what is necessary to leave a recoverable stopping point. |
+| **2** | **Light** | Put away what you just used. Commit completed work as appropriate, update the immediate issue, and remove task-generated temporary files. |
+| **3** | **Standard** (default) | Complete the routine housekeeping checklist. Reconcile commits and issue statuses, update relevant documentation and handoff notes, and remove known disposable artifacts. |
+| **4** | **Deep** | Check the places routine housekeeping misses. Review stale branches and worktrees, disposable caches, outdated status information, obsolete documentation, and leftover artifacts. Resolve what is safe and authorized. |
+| **5** | **Immaculate** | Complete the deep housekeeping **and verify the final state**. Every in-scope change, branch, issue, document, and artifact has an intentional disposition. Nothing remains forgotten, ambiguous, or unaccounted for. |
 
-The chores-to-clean-room metaphor is deliberate. C1 is washing the dishes after dinner.
-C5 is the clean room you enter before a release, a benchmark, or a handover to another
-team: you can account for every item left in it.
+The dividing line at the top is **"perform the chores" versus "verify that no applicable
+chores remain."**
+
+> **Immaculate:** complete and verify all applicable housekeeping within the authorized
+> scope. Preserve intentional work and required artifacts; explicitly account for anything
+> that cannot or should not be removed.
+
+The goal is **nothing left unattended, not nothing left on disk.** Immaculate is not a purge.
+A kept `.env`, a `retain/` branch, or an open task deferred to a follow-up is immaculate, as
+long as it has a stated disposition.
+
+Why these names:
+- **Absolute** implies an unconditional guarantee.
+- **Strict** describes how firmly rules are enforced, not how much gets done.
+- **Maximum** does not describe the result.
+- **Pristine** suggests an untouched state.
+- **Sterile** and **clean room** emphasize removing contamination.
+
+**Immaculate** allows a project to be in active use and completely in order.
 
 ## Requirements
 
@@ -56,58 +77,59 @@ scratch output, the worktree holding an uncommitted fix. Landing comes before cl
 because a branch is only removable once it is landed. A pass interrupted part-way leaves
 the durable half done.
 
-### R-2: Levels are cumulative and scoped by reach
+### R-2: Levels are cumulative; scope is a separate setting
 
-A level adds scope. It never skips a lower level's obligations. A C4 pass also records and
-lands. Each level has a **reach**: the set of places it may mutate.
+A level adds chores and never skips a lower level's obligations. Scope bounds where any
+level may act:
 
-| Level | May mutate | Reports only |
-|---|---|---|
-| C1 | the current repo's index, branch, and tracker; the remote task branch | everything else |
-| C2 | + untracked files and processes this session created (ledger or attribution) | |
-| C3 | + the repo's local and remote branches, worktrees, and refs; this project's containers | other repos |
-| C4 | + the repo's ignored build outputs and caches; this project's Docker images, networks, and volumes (S3); the user-level harness (`~/.claude`, session scratchpads, `$TMPDIR` entries attributed to this repo) | other repos' working trees |
-| C5 | + global dev caches and machine-wide Docker (minus the protected set); the whole checkout to fresh-clone state | **other repos' working trees are never mutated, at any level** |
+| Scope | May act on |
+|---|---|
+| `session` | only what this session created (provenance ledger), plus landing this session's task branch |
+| `repo` (default) | + the current repository: its index, branches, worktrees, refs, ignored outputs, and tracker; this project's containers and processes; this project's Claude Code state (its memory, scratchpads, repo settings) |
+| `machine` | + user- and machine-wide state: global dev caches, all Docker, the Claude Code plugin cache, transcripts of deleted projects, user settings, other projects' scratchpads, orphaned processes outside the repo |
 
-Other repositories' working trees stay out of reach even at C5. Each repository has one
-live session that owns its mutations. Moving another repo's `HEAD`, index, or tree
-without that session seeing it is how commits race onto the wrong branch. C5 **reports**
-their state; their own sessions clean them.
+- **Other repositories' working trees are never mutated, at any level or scope.** Each
+  repository has one live session that owns its mutations. Moving another repo's `HEAD`,
+  index, or tree without that session seeing it is how commits race onto the wrong branch
+  (ADR-0005). Machine scope *reports* them.
+- A level never widens the scope. "Deep clean" means a deep pass at the configured scope
+  (repo by default). Machine-wide purges happen only when machine scope is asked for.
 
 ### R-3: Every operation carries a safety class
 
 | Class | Meaning | Examples | Gate |
 |---|---|---|---|
 | **S0 Observe** | read-only | inventory, `git fetch --prune`, `docker system df`, `claude doctor`, `lore check` | none |
-| **S1 Reversible** | undo is cheap, local, and recorded in the journal | move to trash; stop (not remove) a container; delete a *landed* branch after recording its SHA; export a stash to a patch before dropping it; remove a *clean* worktree whose branch persists; stop a process the ledger says this session started | allowed within the chosen level; listed in the plan |
-| **S2 Regenerable** | data is destroyed, but a source of truth regenerates it at a cost | build outputs, `node_modules`, `.venv`, tool caches, unused Docker images and build cache, orphaned plugin-cache versions | shown in the plan, then approved **once as a batch** |
-| **S3 Irreversible** | unique data could be lost | a branch with unique unlanded commits; a dirty worktree; dropping a stash without export; a Docker volume; an untracked file that is neither ignored nor in the ledger; purging transcripts or memories; force-push; history rewrite | confirmed **per item, by name**; never "yes to all"; never implied by the level |
+| **S1 Reversible** | undo is cheap, local, and recorded in the journal | move to trash; stop (not remove) a container; delete a *landed* branch after recording its SHA; archive a stash under a ref, then drop it; remove a *clean* worktree whose branch persists; stop a process the ledger says this session started | allowed within the chosen level and scope; listed in the plan |
+| **S2 Regenerable** | data is destroyed, but a source of truth regenerates it at a cost | build outputs, `node_modules`, `.venv`, tool caches, unused Docker images and build cache, stopped containers, orphaned plugin-cache versions | shown in the plan, then approved **once as a batch** |
+| **S3 Irreversible** | unique data could be lost | a branch with unique unlanded commits; dropping a stash without archiving; a Docker volume; an untracked file that is neither ignored nor in the ledger; purging transcripts or memories; force-push; history rewrite | confirmed **per item, by name**; never "yes to all"; never implied by the level |
 
 **The evidence raises the class; nothing lowers it.**
 - *Provenance* is one of `ledger` (this session recorded creating it), `attributed`
   (repo-scoped by compose label, working directory, or a configured temp prefix), or
   `unknown`.
-- An `unknown` item is raised one class, capped at S3.
-- A junk-looking file the session did not create is therefore S2: approved as a batch after
-  review, never swept silently.
+- An `unknown` item is raised one class, capped at S3. A junk-looking file the session did
+  not create is therefore S2: approved as a batch after review, never swept silently.
 - With no trash tool, trashing is a permanent delete, so a trash item's base class rises
   from S1 to S2.
 
 ### R-4: The protected set is never planned for removal
 
-At any level, the engine refuses to plan these:
+At any level and scope, the engine refuses to plan these:
 - **Branches:** the trunk and release branches (`dev`, `main`, `master`, or as
-  configured); the checked-out branch; any branch checked out in a worktree; the prefixes
-  `retain/`, `preserve/`, `archive/`.
+  configured); the checked-out branch; any branch checked out in a dirty or locked
+  worktree; the prefixes `retain/`, `preserve/`, `archive/`.
 - **Paths:** tracked files; `.git/`; `.env*`; `*.pem`, `*.key`, `id_*`; `.quest/`;
-  `.lore/` config; anything under `docs/`; `.pi/`.
-- **Runtime:** containers and images named in `protect.containers` / `protect.images`, in
-  every Docker context. The built-in entry is the self-hosted CI runner `opum-runner` and
-  its image. Also anything labelled `housekeeping.protect=true`.
-- **Harness:** the current session's transcript and scratchpad; managed settings.
-- **Everything else outside the level's reach.**
+  `.lore/`; anything under `docs/`; `.pi/`; the `[immaculate] keep` list.
+- **Runtime:** containers and images named in `protect.containers` / `protect.images`.
+  The built-in entry is the self-hosted CI runner `opum-runner` and its image. Also
+  anything labelled `housekeeping.protect=true`; Claude Code itself, editors, language
+  servers, and pm2.
+- **Harness:** the current session's transcript and scratchpad; plugin versions a live
+  session still uses; managed settings.
 
-A protected item may still appear in the report as a finding. It is never in the plan.
+A protected item may still appear in the report. At Immaculate it gets the automatic
+disposition *kept (protected: reason)*. It is never in the plan.
 
 ### R-5: A branch with unique commits is unlanded work, not clutter
 
@@ -115,18 +137,19 @@ This is the only irreversible mistake in git housekeeping, so the proof bar is e
 A local or remote branch is removable as **landed** only when all of these hold:
 
 1. The remote-tracking refs were fetched with `--prune` in this pass.
-2. At least one of these containment proofs holds against the integration branch:
+2. At least one containment proof holds against the integration branch:
    - ancestry: `git merge-base --is-ancestor <tip> origin/<trunk>`;
    - squash equivalence: the merge-tree of the branch onto the trunk equals the trunk's
      tree;
    - PR state: a `MERGED` PR whose merge commit is an ancestor of `origin/<trunk>`.
-3. No worktree has it checked out with uncommitted changes.
+3. No dirty or locked worktree has it checked out. A clean worktree is removed first, in
+   the same apply.
 
 "Upstream gone" is **not** a containment proof. A branch that fails the proof is
-`UNLANDED`. Removing it is S3 and requires an `archive/<name>` ref or tag first.
+`UNLANDED`. Removing it is S3 and requires an `archive/<name>` ref first.
 
 When `opum-sdlc` is installed, its rules govern branch naming, merge strategy, and
-promotion. This spec only adds the classification and the gate.
+promotion (ADR-0002). This spec only adds the classification and the gate.
 
 ### R-6: Apply exactly what was reviewed
 
@@ -135,6 +158,9 @@ Removals go through the engine's plan/apply cycle (ADR-0003):
 - `hk apply` re-checks each fingerprint. It skips any item that changed since planning,
   runs only S3 items whose IDs were confirmed, and appends every action with its undo
   recipe to a journal.
+- Engine state (plans, journals, ledger, dispositions) lives under
+  `<git-common-dir>/housekeeping/`, never in the working tree: housekeeping must not
+  itself leave untracked files behind.
 - A skill never deletes through an ad-hoc generated script. It never uses
   `rm -rf "$VAR"` on a path it has not resolved and containment-checked. It never
   defaults to `git clean -X`, which deletes ignored `.env` files.
@@ -153,47 +179,69 @@ Removals go through the engine's plan/apply cycle (ADR-0003):
   `quest task list --json`, and cross-check `gh pr list --state open` before reporting a
   clear state.
 
-### R-8: Every pass reports
+### R-8: Every pass reports; Immaculate proves its final state
 
 Every pass ends with a report of:
-- the level and how it was chosen;
+- the level and scope, and how they were chosen;
 - each phase's actions, with class and result;
 - skipped items and why;
 - bytes reclaimed;
 - the journal path for undo;
-- open findings outside reach.
+- open findings outside the scope.
 
-A C5 pass also produces a **clean-room certificate**: the rebuild-from-scratch commands
-and their exit codes, and the remaining inventory, with a reason for every item left.
+An **Immaculate** pass also verifies:
+1. **Disposition.** `hk disposition` lists every in-scope inventory item. Each one needs
+   an intentional disposition: *kept* (with the reason), *removed*, *landed*, *deferred*
+   (to a named task), or *accepted* (a known, accepted state). Protected and keep-list
+   items are disposed automatically as kept. The pass is complete only when nothing is
+   unaccounted for (exit 0).
+2. **Final-state checks.** The working tree is clean or explained; the branch is pushed;
+   the tracker and docs gates pass; and the `[immaculate] verify` commands (for example, a
+   from-scratch install, build, and test) exit 0.
+
+The report carries this as the **disposition record**.
 
 ## Design
 
 ### What each level adds
 
-Each row is phased as in R-1. Cells are cumulative: a level also does everything to its
-left.
+Cells are cumulative: a level also does everything to its left. The scope column in the
+engine filters which of these items a pass may act on.
 
-| Phase | C1 Tidy | C2 Sweep | C3 Clean | C4 Deep clean | C5 Clean room |
+| Phase | Minimal | Light | Standard (default) | Deep | Immaculate |
 |---|---|---|---|---|---|
-| **Record** | progress note on the In Progress task; criteria checked with evidence | + update lore docs the session touched; file follow-up tasks for discovered work; stash review | + close the task in the delivering PR; `lore check`, `quest agents --check`, `lore agents --check`, `quest doctor` (read `data.healthy`) | + spec-drift reconciliation across the epic (two-way: fix code, amend spec, or record a deviation) | + record the clean-room certificate on the task |
-| **Land** | logical commits on the task branch; push the branch | + open or refresh the PR | + squash-merge when checks are green; promote only when the user asked and the promotion conditions hold | | |
-| **Clear** | none (findings reported) | ledger-owned junk (S1); processes and dev servers this session started (S1); clean worktrees this session created (S1) | landed branches, local and remote (S1); stale refs (S0); prunable and clean worktrees (S1); ignored junk (S1); this project's containers: stop (S1), remove when stopped (S2); orphaned processes attributed to the repo (S2) | build outputs and dependency dirs (S2); project caches (S2); project images and networks (S2); volumes (S3); stale unlanded branches, archived then deleted (S3); stashes older than the configured age, exported then dropped (S1); `$TMPDIR` entries with configured prefixes (S2); old session scratchpads (S2); orphaned plugin-cache versions (S2); transcripts of deleted project paths via `claude project purge --dry-run` (S3); proposals for memory, CLAUDE.md, permission and hook hygiene (applied only on approval) | checkout reset to fresh-clone state minus the keep-list (known build outputs S2; every other ignored or untracked path S3); global caches via their official prune commands (S2); machine-wide Docker prune minus the protected set (S2, volumes S3); remaining orphaned processes (S3) |
-| **Verify** | tree clean or remaining changes explained; branch pushed | no ledger process alive; no ledger junk left | no removable-landed branches left; gates green | reclaimed bytes measured | rebuild from scratch (install, build, test) exits 0 |
+| **Record** | a progress note on the In Progress task: where things stand and what is next | + update the immediate issue; criteria checked with evidence | + reconcile issue statuses with commits; update relevant docs and handoff notes; close a finished task in its delivering PR; gates: `lore check`, `quest agents --check --target claude`, `lore agents --check`, `quest doctor` (read `data.healthy`) | + outdated status information (stale In Progress tasks, drifted Stories, `lore orphans`, `stale_after`); obsolete documentation; two-way spec-drift reconciliation (fix code, amend spec, or record a deviation) | + every task and document touched has a stated disposition |
+| **Land** | preserve the work: commit it (a WIP commit if needed) on the task branch and push | commit completed work in logical units; push | + open or refresh the PR; merge when checks are green; delete the local branch after its merge; promote only on request | | + the branch state is verified (pushed, landed, or deferred) |
+| **Clear** | nothing | task-generated temporary files: the ledger's junk (S1), processes and dev servers (S1), clean worktrees (S1), temp (S2) | known disposable artifacts: landed branches, local and remote (S1); prunable worktrees and clean worktrees of landed branches (S1); ignored junk (S1); junk-named untracked files (S2, reviewed); this project's containers: stop (S1), remove when stopped (S2); orphaned processes in the repo (S2) | the places routine housekeeping misses: stale unlanded branches, archived then deleted (S3); other clean worktrees (S1); old stashes, archived then dropped (S1); build outputs and dependency dirs (S2); disposable caches (S2); `$TMPDIR` entries with configured prefixes (S2); old session scratchpads (S2); project images and networks (S2/S1) and volumes (S3); Claude Code debris and bloat proposals (memory, CLAUDE.md, permissions, hooks, plugins) | anything left in scope is either disposed of or explicitly kept: untracked unknown files and non-build ignored files (S3, or kept with a reason) |
+| **Verify** | the work is recoverable (committed and pushed, or its location is recorded) | no ledger process alive; no ledger junk left | no landed branch left; gates green | reclaimed bytes measured | `hk disposition` exits 0; `[immaculate] verify` commands exit 0 |
+
+**Machine scope** adds, at Deep and above:
+- global dev caches, via their own prune commands (S2);
+- all Docker: unused images, stopped containers, build cache (S2), dangling volumes (S3);
+- the Claude Code plugin cache: orphaned versions and dead in-use markers (S2);
+- transcripts of deleted projects (S3);
+- user settings findings;
+- other projects' scratchpads (S2);
+- orphaned dev processes outside the repo (S3).
 
 ### Choosing a level
 
-When the user names a level, use it. Otherwise infer the level from context, state it in
-the plan, and let the user raise or lower it:
+When the user names a level, use it. Otherwise infer it from context, state it in the
+plan, and let the user raise or lower it:
 
-1. The session is ending, compacting, or handing off → **C1**.
-2. A bare "clean up", "tidy up", or "sweep" → **C2**.
-3. A task has just finished, a PR merged, or "finish/close out this branch" → **C3**.
-4. Disk space, "deep clean", or a slow machine → **C4**.
-5. "Pristine", "clean room", or "scrub"; before a release, benchmark, or demo → **C5**.
+1. Context is about to run out, an emergency stop, "save where we are" → **Minimal**.
+2. The session is ending, "wrap up for today", a handoff → **Light**.
+3. A bare "clean up" or "tidy up"; a task has just finished, a PR merged, "close this
+   out" → **Standard** (the default).
+4. "Deep clean", disk space, "things have piled up" → **Deep**.
+5. "Immaculate", "spotless", "leave nothing behind"; before a release, a handover to
+   another team, or an audit → **Immaculate**.
 
-`.housekeeping.toml` may set the defaults for these contexts. An agent may always choose
-a *lower* level than inferred when it is unsure. Going *higher* than the user asked
-requires asking.
+Scope defaults to `repo`. Use `session` when the user says "just what you did". Use
+`machine` only when the user asks about the machine, disk space overall, global caches,
+all of Docker, or `~/.claude`. `.housekeeping.toml` may set the defaults. An agent may
+always choose a *lower* level or a narrower scope when unsure. Going *higher* or *wider*
+than the user asked requires asking.
 
 ### Configuration
 
@@ -202,51 +250,57 @@ The engine's built-in defaults apply without the file.
 
 ```toml
 version = 1
+housekeeping_level = "standard"   # minimal | light | standard | deep | immaculate
+housekeeping_scope = "repo"       # session | repo | machine
 
-[levels]                      # context -> level
-default = "C2"
-session_end = "C1"
-task_done = "C3"
+[levels]                          # context -> level, when the user names none
+checkpoint = "minimal"
+session_end = "light"
+default = "standard"
+task_done = "standard"
 
-[sdlc]                        # auto-detected when omitted
-trunk = "dev"                 # integration branch; else origin/HEAD
+[sdlc]                            # auto-detected when omitted
+trunk = "dev"
 release = "main"
 merge = "squash"
 
-[protect]                     # extends the built-in protected set
+[protect]                         # extends the built-in protected set
 branches = ["retain/*", "preserve/*", "archive/*"]
-paths = [".env*", "*.pem", "*.key"]
+paths = []
 containers = ["opum-runner"]
 images = ["*opum-actions-runner*"]
 
-[junk]                        # extra agent-junk patterns (untracked files)
+[junk]
 patterns = []
 
-[tmp]                         # $TMPDIR entries attributed to this repo
+[tmp]                             # $TMPDIR entries attributed to this repo
 prefixes = []
 max_age_days = 2
 
 [stash]
 max_age_days = 30
 
-[provenance]                  # opt-in capture hook
+[branches]
+stale_days = 30
+
+[provenance]                      # opt-in capture hook
 enabled = false
 
-[cleanroom]
-keep = [".env", ".env.local"]
-verify = []                   # e.g. ["npm ci", "npm test"]
+[immaculate]
+keep = [".env", ".env.local"]     # disposed as "kept: keep-list"
+verify = []                       # e.g. ["npm ci", "npm test"]
 ```
 
 ### The engine and the skills
 
 The skills make judgement calls. The engine (`scripts/hk.py`, stdlib Python 3.9+) does
-the deterministic work: inventory, classification, planning, applying, journalling, and
-undo. Commit, PR, merge, and promotion are *landing* operations. The skills perform them
-directly under `opum-sdlc`. The engine only probes their state.
+the deterministic work: inventory, classification, planning, applying, journalling, undo,
+and disposition. Commit, PR, merge, and promotion are *landing* operations. The skills
+perform them directly under `opum-sdlc`. The engine only probes their state.
 
 | Skill | Phases it owns |
 |---|---|
-| `tidy` | chooses the level; runs the phases in order; writes the report |
+| `tidy` | chooses the level and scope; runs the phases in order; writes the report and, at Immaculate, the disposition record (`/clean <level> [scope]`) |
 | `session-sync` | Record |
 | `git-hygiene` | Land; the git part of Clear |
 | `workspace-clean` | Clear for files, temp, builds, caches |
@@ -255,11 +309,11 @@ directly under `opum-sdlc`. The engine only probes their state.
 
 ## Open questions
 
-- **Clean-room keep-list.** Should C5 detect per-ecosystem keep-worthy ignored files
-  (IDE settings, local certs) automatically, or rely only on `[cleanroom] keep`? The
-  proposal is the explicit list plus the protected path set, and to report every other
-  ignored file before removing it.
 - **Estate audit.** Should the engine read `sdlc-audit --json` when opum-agent is present
   instead of classifying branches itself? The proposal is to classify natively (it must
   work outside the fleet) and cross-check against `sdlc-audit` when it is available,
   reporting any disagreement.
+- **Disposition persistence.** Dispositions live in `.git/housekeeping/dispositions.json`,
+  which is machine-local. Should an Immaculate pass also write them into the task's final
+  summary, or into a docs record, so a reviewer can see them? The proposal is to put the
+  summary on the task and the full record in the PR body.

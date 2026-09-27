@@ -211,7 +211,7 @@ default. This is spec R-6 and the S2 class.
   (https://man7.org/linux/man-pages/man1/kill.1.html).
 
 **Implication for this plugin.** Scope containers by Compose label or working directory,
-never by a host-wide prune below C5. Kill only processes the ledger or the repo's working
+never by a host-wide prune unless machine scope was asked for. Kill only processes the ledger or the repo's working
 directory attributes, with SIGTERM before SIGKILL. Hard-protect named infrastructure such as
 a self-hosted CI runner in every Docker context.
 
@@ -359,8 +359,8 @@ configurable, not hard-coded.
 No surveyed tool combines a shared risk class, blast radius, provenance and an undo journal
 across git, files, containers and processes.
 
-**Implication for this plugin.** Two dials: the cleanliness level sets reach, and the safety
-class gates each operation. Evidence only ever raises a class. Authorization lives in the
+**Implication for this plugin.** Three dials: the housekeeping level sets how much is done,
+the scope sets where, and the safety class gates each operation. Evidence only ever raises a class. Authorization lives in the
 engine, not in the model's judgement. This is the spec's S0-S3 model.
 
 ### 10. Measured machine inventory (snapshot, 2026-09-26)
@@ -388,19 +388,22 @@ sweep had removed anything. These are observations, not benchmarks.
 | Global dev caches | `~/.npm` 13 GB, `~/.cache/uv` 2.5 GB | Regenerable |
 | Junk signature | `~/nul` | An agent ran a Windows `2>nul` redirect on macOS |
 
-How the top targets map to the spec's levels and classes:
+How the top targets map to the spec's levels, scopes and classes (mapping updated
+2026-09-27 for the Minimal to Immaculate levels and the separate scope setting; see
+[ADR-0006](../adr/0006-housekeeping-levels-minimal-to-immaculate-with-scope-as-a-separate-setting.md)):
 
-| Target | Level | Class | Why |
-|---|---|---|---|
-| This session's junk, processes and clean worktrees | C2 | S1 | The ledger proves provenance |
-| Orphaned processes attributed to the repo | C3 | S1, or S3 when unattributed | A port alone does not prove ownership |
-| Prunable worktrees; this project's stopped containers | C3 | S1 | Git and Compose prove scope |
-| Orphaned plugin versions; old scratchpads; attributed `$TMPDIR` prefixes | C4 | S2 | Regenerable, but outside the repo |
-| Project images and networks; volumes | C4 | S2; volumes S3 | Volumes hold unique data |
-| Transcripts of deleted project paths | C4 | S3 | `claude project purge --dry-run` first |
-| CLAUDE.md, memory, permission and hook bloat | C4 | proposals only | Applied only on approval |
-| Global caches; machine-wide Docker minus the protected set | C5 | S2; volumes S3 | Official prune commands |
-| Other repos' worktrees, handovers and debris | never mutated | reported | ADR-0005 |
+| Target | Level | Scope | Class | Why |
+|---|---|---|---|---|
+| This session's junk, processes and clean worktrees | Light | session | S1 | The ledger proves provenance |
+| Orphaned processes in the repo | Standard | repo | S2 | A port alone does not prove ownership |
+| Prunable worktrees; this project's containers | Standard | repo | S1; removing a stopped container S2 | Git and Compose prove scope |
+| This project's old scratchpads; attributed `$TMPDIR` prefixes | Deep | repo | S2 | Regenerable |
+| Project images and networks; volumes | Deep | repo | S2, networks S1; volumes S3 | Volumes hold unique data |
+| CLAUDE.md, memory, permission and hook bloat | Deep | repo | proposals only | Applied only on approval |
+| Orphaned plugin versions; other projects' scratchpads | Deep | machine | S2 | Regenerable, but outside the repo |
+| Transcripts of deleted project paths | Deep | machine | S3 | `claude project purge --dry-run` first |
+| Global caches; all Docker minus the protected set | Deep | machine | S2; volumes S3 | Official prune commands |
+| Other repos' worktrees, handovers and debris | never mutated | any | reported | ADR-0005 |
 
 **Implication for this plugin.** The largest piles are harness and temp debris, not repo
 content, so harness-hygiene and workspace-clean carry most of the reclaimed bytes. Several

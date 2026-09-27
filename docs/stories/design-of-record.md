@@ -5,7 +5,7 @@ title: Design of record
 tags:
   - design
   - research
-summary: The research survey, the cleanliness-level spec and the ADRs that fix the plugin's design before code lands.
+summary: The research survey, the housekeeping-levels spec and the ADRs that fix the plugin's design before code lands.
 tasks:
   - hs-2
 generated:
@@ -40,8 +40,10 @@ Fix the plugin's design in reviewed docs before code lands, so every skill and t
 
 Part of [Housekeeping for agentic engineering](../epics/housekeeping-for-agentic-engineering.md).
 
-- Spec: [Cleanliness levels](../specs/cleanliness-levels.md).
+- Spec: [Housekeeping levels](../specs/cleanliness-levels.md). Levels Minimal to Immaculate
+  and the separate scope setting replaced the C1-C5 draft on 2026-09-27
+  ([ADR-0006](../adr/0006-housekeeping-levels-minimal-to-immaculate-with-scope-as-a-separate-setting.md), HS-13).
 - Research: [State of the art](../reference/state-of-the-art-in-agentic-housekeeping.md) and [Upstream findings](../reference/upstream-findings.md).
-- Decisions: ADR-0001 to ADR-0005, listed in the [Epic](../epics/housekeeping-for-agentic-engineering.md#decisions).
-- The spec's two open questions (the clean-room keep-list and the estate audit) stay open
-  until the engine story settles them.
+- Decisions: ADR-0001 to ADR-0006, listed in the [Epic](../epics/housekeeping-for-agentic-engineering.md#decisions).
+- The spec's two open questions (the estate audit and where dispositions persist) stay
+  open until the engine story settles them.

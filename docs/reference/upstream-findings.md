@@ -123,7 +123,7 @@ The trap is that `edit --status Done` looks like a normal close and exits 0, and
 later error names neither the cause nor the recovery. Suggested fix: have the error hint
 at `demote`, or have `edit --status <terminal>` warn that it does not relocate the record.
 This plugin's spec already requires closing with `task complete` only
-([Cleanliness levels, R-7](../specs/cleanliness-levels.md#r-7-record-and-land-follow-the-tracker-and-docs-contracts)).
+([Housekeeping levels, R-7](../specs/cleanliness-levels.md#r-7-record-and-land-follow-the-tracker-and-docs-contracts)).
 
 ### (c) `quest doctor` exits 0 when unhealthy
 
@@ -131,7 +131,7 @@ This plugin's spec already requires closing with `task complete` only
 |---|---|
 | Owner | quest-cli |
 | Version | quest 0.10.0 |
-| Workflow step | Tracker gate at C3 and in CI |
+| Workflow step | Tracker gate at Standard and in CI |
 | Classification | Missing capability |
 
 Minimal repro: in a sandbox, set one task's `status` to the retired literal `"Blocked"`,
@@ -177,7 +177,7 @@ in Claude Code's `cleanupPeriodDays` sweep covers them
 (https://code.claude.com/docs/en/claude-directory).
 
 Suggested fix: wrap each `mkdtemp` in teardown that always runs, and add a CI assertion
-that the suite leaves `$TMPDIR` as it found it. This plugin can only clear these at C4
+that the suite leaves `$TMPDIR` as it found it. This plugin can only clear these at Deep
 through configured `[tmp] prefixes`, which treats the symptom.
 
 ### (e) Orphaned `quest browser --port 0` processes

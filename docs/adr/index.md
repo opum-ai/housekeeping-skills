@@ -6,4 +6,5 @@
 - [A shared stdlib plan-apply engine with fingerprinted plans, a journal and undo](0003-a-shared-stdlib-plan-apply-engine-with-fingerprinted-plans-a-journal-and-undo.md)
 - [Opt-in provenance ledger via a fail-open capture hook](0004-opt-in-provenance-ledger-via-a-fail-open-capture-hook.md)
 - [Graduated reach: other repos' working trees are never mutated](0005-graduated-reach-other-repos-working-trees-are-never-mutated.md)
+- [Housekeeping levels Minimal to Immaculate, with scope as a separate setting](0006-housekeeping-levels-minimal-to-immaculate-with-scope-as-a-separate-setting.md)
 <!-- lore:index:end -->

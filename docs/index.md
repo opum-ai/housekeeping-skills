@@ -17,15 +17,15 @@ entry point and the only one that carries `okf_version`.
 
 ## Start here
 
-- [Cleanliness levels](specs/cleanliness-levels.md): the design of record. Levels C1-C5,
-  safety classes S0-S3, the protected set, and reach.
+- [Housekeeping levels](specs/cleanliness-levels.md): the design of record. Levels Minimal
+  to Immaculate, scope (session, repo, machine), safety classes S0-S3, and the protected set.
 - [Housekeeping for agentic engineering](epics/housekeeping-for-agentic-engineering.md):
   the epic, its stories, and its decisions.
 - [State of the art in agentic housekeeping](reference/state-of-the-art-in-agentic-housekeeping.md):
   the research behind the design.
 - [Upstream findings](reference/upstream-findings.md): dated findings for other tools'
   owners.
-- [Decisions](adr/index.md): ADR-0001 to ADR-0005.
+- [Decisions](adr/index.md): ADR-0001 to ADR-0006.
 
 <!-- lore:index:begin -->
 - [adr](adr/index.md)

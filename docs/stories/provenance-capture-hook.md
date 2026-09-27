@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=../../.lore/schemas/arc.schema.json
 type: Arc
 title: Provenance capture hook
 tags:

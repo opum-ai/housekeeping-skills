@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=../../.lore/schemas/arc.schema.json
 type: Arc
 title: hk plan-apply engine
 tags:
@@ -42,5 +43,11 @@ Part of [Housekeeping for agentic engineering](../epics/housekeeping-for-agentic
 - Design: [ADR-0003](../adr/0003-a-shared-stdlib-plan-apply-engine-with-fingerprinted-plans-a-journal-and-undo.md); rules R-3 to R-6 of the [spec](../specs/cleanliness-levels.md).
 - Collectors cover git, files, runtime, harness and caches. Provenance comes from the ledger
   ([ADR-0004](../adr/0004-opt-in-provenance-ledger-via-a-fail-open-capture-hook.md)) or attribution; `unknown` raises the class by one.
-- The engine enforces the protected set and each level's reach ([ADR-0005](../adr/0005-graduated-reach-other-repos-working-trees-are-never-mutated.md)).
+- The engine enforces the protected set and the scope: `--level minimal|light|standard|deep|immaculate`
+  (or `1`-`5`, legacy `c1`-`c5`) sets how much is planned, `--scope session|repo|machine`
+  sets where, and no machine-scope item is planned unless the scope is `machine`
+  ([ADR-0006](../adr/0006-housekeeping-levels-minimal-to-immaculate-with-scope-as-a-separate-setting.md)).
+  Other repositories' working trees are never mutated ([ADR-0005](../adr/0005-graduated-reach-other-repos-working-trees-are-never-mutated.md)).
+- `hk disposition` lists every in-scope item for an Immaculate pass and exits 0 only when
+  nothing is unaccounted for. Engine state lives under `.git/housekeeping/`.
 - It probes landing state but never commits, pushes, merges or promotes ([ADR-0002](../adr/0002-defer-branch-pr-and-promotion-policy-to-opum-sdlc.md)).
