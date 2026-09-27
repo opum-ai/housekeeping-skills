@@ -15,7 +15,7 @@ needs them.
 - 3 commits on feat/HS-4-tidy-skill, pushed; PR #42 squash-merged into dev
 - local branch feat/HS-4-tidy-skill deleted after the merge (landed: PR #42 MERGED)
 
-**Cleared** (journal: .claude/housekeeping/journal/20260926T231500-C3.jsonl; `hk undo <journal>` reverses the S1 items)
+**Cleared** (journal: .git/housekeeping/journal/20260926T231500-C3.jsonl; `hk undo <journal>` reverses the S1 items)
 | class | items | reclaimed | notes |
 |---|---|---|---|
 | S1 | 5 | 12 KB | 3 landed branches, 1 prunable worktree, 1 ignored junk log |
