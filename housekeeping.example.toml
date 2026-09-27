@@ -1,0 +1,47 @@
+# .housekeeping.toml: per-repo settings for housekeeping-skills. Commit it at the repo root.
+# Every key is optional; without the file the engine's built-in defaults apply.
+# Lists under [protect], [junk], [tmp] and [cleanroom] EXTEND the built-ins; they never replace them.
+version = 1
+
+[levels]                      # which cleanliness level a context infers (C1..C5)
+default = "C2"                # a bare "clean up"
+session_end = "C1"            # wrap-up, handoff, compaction
+task_done = "C3"              # task finished / PR merged
+
+[sdlc]                        # auto-detected when omitted (dev if it exists, else origin/HEAD)
+trunk = "dev"                 # integration branch: containment is proven against it
+release = "main"              # release branch: also counts as landed
+merge = "squash"
+remote = "origin"
+
+[protect]                     # never planned for removal, at any level
+branches = ["retain/*", "preserve/*", "archive/*"]
+paths = []                    # repo-relative globs, e.g. ["fixtures/golden/*"]
+containers = ["opum-runner"]  # matched by name in the active Docker context
+images = ["*opum-actions-runner*"]
+
+[junk]                        # extra agent-junk name globs for untracked files
+patterns = []
+
+[tmp]                         # $TMPDIR entries this repo's tests leak
+prefixes = []                 # e.g. ["myrepo-e2e-", "lore-readme-"]
+max_age_days = 2
+
+[stash]
+max_age_days = 30             # older stashes are archived under refs/archive/stash, then dropped (C4)
+
+[branches]
+stale_days = 30               # unlanded branches idle this long are offered for archive-then-delete (C4, S3)
+
+[scratchpad]
+max_age_days = 3              # Claude Code session scratch dirs (C4 this project, C5 all)
+
+[provenance]
+enabled = false               # true turns on the capture hook: cleanup can target exactly what sessions created
+
+[cleanroom]
+keep = [".env", ".env.local"] # survive the C5 reset to fresh-clone state
+verify = []                   # rebuild-from-scratch commands, e.g. ["npm ci", "npm run build", "npm test"]
+
+[docker]
+projects = []                 # compose project names that belong to this repo (default: the repo dir name)
