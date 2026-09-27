@@ -1,5 +1,21 @@
 [
   {
+    "query": "do a deep clean of this project, it's gotten messy",
+    "should_trigger": true
+  },
+  {
+    "query": "tidy up this repo before I log off",
+    "should_trigger": true
+  },
+  {
+    "query": "time for a deep clean",
+    "should_trigger": true
+  },
+  {
+    "query": "tidy up",
+    "should_trigger": true
+  },
+  {
     "query": "ok I'm done for the night \u2014 can you wrap everything up so I can pick it up tomorrow? commit whatever's sensible, update the task",
     "should_trigger": true
   },

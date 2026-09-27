@@ -45,6 +45,7 @@ Classifications:
 | f | quest-cli | opum-quest plugin 0.10.0 | Each plugin version installs about 620 MB | Defect |
 | g | opum-fleet | opum-workflow plugin | `.claude/handovers/` files accumulate without pruning | Missing capability |
 | h | anthropics/claude-code | commit-commands `/clean_gone` | Deletes unmerged branches and dirty worktrees on `[gone]` alone | Defect |
+| i | anthropics (skill-creator) | skill-creator `scripts/run_eval.py` | Parallel workers share one `.claude/commands/`, so each run sees N copies of the skill and a trigger counts only when Claude picks its own copy (~1/N) | Defect |
 
 ### (a) `lore link` half-writes on failure and strips the schema modeline
 
@@ -293,3 +294,30 @@ equivalence, or a merged PR) before `-D`; drop `--force` on worktrees with chang
 dry run and print deleted SHAs. This plugin's
 [R-5](../specs/cleanliness-levels.md#r-5-a-branch-with-unique-commits-is-unlanded-work-not-clutter)
 is the rule it follows instead.
+
+### (i) skill-creator trigger evals collide across parallel workers
+
+- **Owner:** Anthropic's `skill-creator` plugin (claude-plugins-official). **Tool:**
+  `scripts/run_eval.py`, cache version `fa59bc903774`, run with Python 3.12 and Claude
+  Code 2.1.283.
+- **Classification:** defect. **Workflow step:** description optimization and trigger
+  evaluation (`run_eval.py`, and `run_loop.py`, which calls it).
+
+Minimal repro:
+1. Run `python -m scripts.run_eval --eval-set <8 should-fire queries> --skill-path <skill> --num-workers 8`.
+2. While it runs, `ls .claude/commands/` shows 8 files `<skill>-skill-<uuid>.md` with
+   identical descriptions.
+3. Each `claude -p` sees all 8. Detection returns True only when the invoked command name
+   contains the run's own uuid.
+
+Observed (exit 0): the `tidy` skill scored 0/5 on its should-fire queries (trigger rates
+0.0 to 0.33).
+
+What should happen: a single probe with one copy installed invoked the skill as its first
+tool call. Rerunning the same queries with one private project directory per run
+(`evals/triggers.py` in this repo) scored 12/12 for `tidy` and 51/52 across all six
+skills.
+
+Suggested fix: give each `run_single_query` a private project root (a temporary directory
+containing `.claude/commands/`), or run the workers serially.
+

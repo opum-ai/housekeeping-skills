@@ -1,0 +1,350 @@
+{
+  "tidy": {
+    "passed": 12,
+    "total": 12,
+    "results": [
+      {
+        "query": "do a deep clean of this project, it's gotten messy",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "tidy up this repo before I log off",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "time for a deep clean",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "tidy up",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "ok I'm done for the night \u2014 can you wrap everything up so I can pick it up tomorrow? commit whatever's sensible, update the task",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "before I hand this repo to the contractor on monday I want it spotless: no stray branches, no junk files, containers down, the works",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "clean up after yourself please, you left a bunch of stuff lying around in this repo during that refactor",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "PR #212 just merged \ud83c\udf89 close out the branch and tidy up whatever's left from HS-44",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "my laptop is at 4GB free and it's mostly dev junk I think. deep clean what you can but ask before anything scary",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "what's a good .gitignore for a python + node monorepo? we keep committing __pycache__",
+        "should_trigger": false,
+        "trigger_rate": 0.0,
+        "pass": true
+      },
+      {
+        "query": "write a bash script that deletes files older than 30 days from /var/log/myapp on our ubuntu servers",
+        "should_trigger": false,
+        "trigger_rate": 0.0,
+        "pass": true
+      },
+      {
+        "query": "refactor utils/cleanup.ts so the cleanupExpiredSessions function uses the new repository pattern",
+        "should_trigger": false,
+        "trigger_rate": 0.0,
+        "pass": true
+      }
+    ]
+  },
+  "git-hygiene": {
+    "passed": 7,
+    "total": 8,
+    "results": [
+      {
+        "query": "git branch shows like 60 branches, most are merged prs from months ago. prune the dead ones but don't lose anything",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "we squash merge everything so git branch --merged is useless. which of my local branches are actually safe to delete?",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "commit this work in sensible chunks and push it, then open a PR against dev",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "promote dev to main for the 0.4.0 release",
+        "should_trigger": true,
+        "trigger_rate": 0.0,
+        "pass": false
+      },
+      {
+        "query": "there are a bunch of worktrees under .claude/worktrees from old agent runs, clean those up",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "explain the difference between git rebase and git merge with a diagram",
+        "should_trigger": false,
+        "trigger_rate": 0.0,
+        "pass": true
+      },
+      {
+        "query": "I accidentally committed my .env with the stripe key 3 commits ago, how do I get it out of history on github?",
+        "should_trigger": false,
+        "trigger_rate": 0.0,
+        "pass": true
+      },
+      {
+        "query": "set up a github action that runs pytest on every push to dev",
+        "should_trigger": false,
+        "trigger_rate": 0.0,
+        "pass": true
+      }
+    ]
+  },
+  "session-sync": {
+    "passed": 8,
+    "total": 8,
+    "results": [
+      {
+        "query": "update QCLI-88 with what we did today and check off whatever criteria we actually proved",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "HS-4 is finished, close it out properly and sync the lore story",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "the spec in docs/specs/auth.md doesn't match what we built anymore, reconcile them",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "leave good notes on the task for whoever picks this up next session",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "record progress on the tracker before I lose this context, we figured out the race condition is in the lease renewal",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "create a new quest task for adding rate limiting to the API with some acceptance criteria",
+        "should_trigger": false,
+        "trigger_rate": 0.0,
+        "pass": true
+      },
+      {
+        "query": "write docs for the public REST API in openapi format",
+        "should_trigger": false,
+        "trigger_rate": 0.0,
+        "pass": true
+      },
+      {
+        "query": "summarize this PR's diff for the release notes",
+        "should_trigger": false,
+        "trigger_rate": 0.0,
+        "pass": true
+      }
+    ]
+  },
+  "workspace-clean": {
+    "passed": 8,
+    "total": 8,
+    "results": [
+      {
+        "query": "there are .bak files, *_v2.py copies and random debug logs all over this repo from the agent, get rid of the junk",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "nuke node_modules, dist, .next and the python caches in here, I need the disk space",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "my $TMPDIR is 24GB, looks like test runs leave temp dirs behind, clean it up safely",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "reset this checkout to a fresh-clone state but keep my .env",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "git clean -fdx this repo for me",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "why is my node_modules folder 2GB? which dependencies are the biggest?",
+        "should_trigger": false,
+        "trigger_rate": 0.0,
+        "pass": true
+      },
+      {
+        "query": "add a pre-commit hook that blocks committing files over 5MB",
+        "should_trigger": false,
+        "trigger_rate": 0.0,
+        "pass": true
+      },
+      {
+        "query": "write a python function that recursively deletes empty directories",
+        "should_trigger": false,
+        "trigger_rate": 0.0,
+        "pass": true
+      }
+    ]
+  },
+  "runtime-clean": {
+    "passed": 8,
+    "total": 8,
+    "results": [
+      {
+        "query": "port 3000 is already in use and I don't have any terminal running a server, find it and kill it",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "stop all the dev servers and background processes you started this session",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "docker is eating 40GB, prune the images and containers from this project but leave the CI runner alone",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "there are like 16 orphaned `quest browser` node processes running for days, clean them up",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "shut everything down for this project \u2014 compose stack, watchers, all of it",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "write a docker-compose.yml for postgres + redis + my node api",
+        "should_trigger": false,
+        "trigger_rate": 0.0,
+        "pass": true
+      },
+      {
+        "query": "my docker build is slow, how do I use layer caching better?",
+        "should_trigger": false,
+        "trigger_rate": 0.0,
+        "pass": true
+      },
+      {
+        "query": "how do I run a background job in node every 5 minutes?",
+        "should_trigger": false,
+        "trigger_rate": 0.0,
+        "pass": true
+      }
+    ]
+  },
+  "harness-hygiene": {
+    "passed": 8,
+    "total": 8,
+    "results": [
+      {
+        "query": "claude code feels sluggish and context fills up fast, audit my setup \u2014 plugins, CLAUDE.md, memory, mcp servers",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "my settings.local.json has like 200 permission rules from one-off approvals, clean it up",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "~/.claude is 4GB, what can I safely delete?",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "prune my claude memories, half of them are outdated",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "which of my installed plugins are costing the most context and which do I never use?",
+        "should_trigger": true,
+        "trigger_rate": 1.0,
+        "pass": true
+      },
+      {
+        "query": "how do I write a PreToolUse hook that blocks rm -rf?",
+        "should_trigger": false,
+        "trigger_rate": 0.0,
+        "pass": true
+      },
+      {
+        "query": "add an MCP server for our postgres database to this project",
+        "should_trigger": false,
+        "trigger_rate": 0.0,
+        "pass": true
+      },
+      {
+        "query": "write a CLAUDE.md for this repo explaining the build and test commands",
+        "should_trigger": false,
+        "trigger_rate": 0.0,
+        "pass": true
+      }
+    ]
+  }
+}

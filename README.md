@@ -165,7 +165,44 @@ merges, and pruning behave as they do against a real host.
 Results: see the table below (updated per benchmark iteration).
 
 <!-- benchmark:begin -->
-_Pending the first benchmark iteration._
+**Iteration 1** (2026-09-26, claude-opus-5-5; `evals/benchmarks/iteration-1/`). 5 task evals, with vs without the
+plugin, graded on the resulting repo/filesystem state:
+
+| | With skills | Without |
+|---|---|---|
+| Assertion pass rate | **100%** (47/47) | 95.6% (45/47) |
+| Time | 138 s ± 44 | 93 s ± 20 |
+| Tokens | 61.9k ± 11.2k | 45.7k ± 6.3k |
+
+An honest reading:
+- **The baseline is strong.** Opus 5.5 without the plugin already keeps `feat/gone`, spots
+  `parser_v2.py` as real work, and leaves a false acceptance criterion unchecked. The
+  difference is two assertions: the landed *remote* branch deleted, and separate logical
+  commits.
+- **What the skills add that the assertions don't capture:**
+  - an undo journal for every removal;
+  - the level and the reason, stated;
+  - a follow-up task that carries an unmet criterion.
+- **Iteration 1 was most useful for the engine defects it exposed**, all fixed:
+  - state leaking into the repo;
+  - a two-pass worktree branch;
+  - a `claude project purge` slug mismatch.
+- **Iteration 2 needs harder, more discriminating cases.**
+
+**Triggering: 51/52** should-fire and near-miss queries passed, 3 runs each, each run in an isolated project dir (see
+`evals/triggers.py`):
+
+| Skill | Passed |
+|---|---|
+| `tidy` | 12/12 |
+| `git-hygiene` | 7/8 |
+| `session-sync` | 8/8 |
+| `workspace-clean` | 8/8 |
+| `runtime-clean` | 8/8 |
+| `harness-hygiene` | 8/8 |
+
+The one miss, "promote dev to main", is taken by `opum-sdlc` when it is installed, which is the intended owner of
+promotion (ADR-0002). Bare "tidy up" and "time for a deep clean" trigger `tidy` 3/3.
 <!-- benchmark:end -->
 
 ## Development
