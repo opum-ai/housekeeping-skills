@@ -19,29 +19,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - name: DIAG orphan detection (temporary)
-        run: |
-          d=$(mktemp -d)
-          sh -c "cd '$d' && nohup $(which python) -m http.server 0 --bind 127.0.0.1 --directory '$d' >/dev/null 2>&1 &"
-          sleep 1
-          cd scripts && D="$d" python - <<'PY'
-          import os
-          from hk import runtime as r
-          d = os.environ["D"]
-          rows = r._process_table()
-          t = {x["pid"]: x for x in rows}
-          me = r._ancestors(os.getpid(), t)
-          for x in rows:
-              if "http.server" in x["cmd"]:
-                  print("row", x, "uid", os.getuid(), "in_me", x["pid"] in me)
-                  print("is_dev", r._is_dev(x["cmd"]), "never", r.match_any(x["cmd"], r.NEVER_KILL))
-                  print("cwds", r._cwds([x["pid"]]), "orphaned", r._orphaned(x["pid"], t))
-          print("realpath", os.path.realpath(d))
-          PY
-          pkill -f "http.server 0 --bind 127.0.0.1" || true
       - name: pytest
         run: |
           python -m pip install --quiet pytest
+          python -m pytest -q -rA -k orphaned -s 2>&1 | grep DIAG || true
           python -m pytest -q
 
   plugin-validate:

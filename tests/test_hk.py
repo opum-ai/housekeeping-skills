@@ -283,6 +283,12 @@ def test_orphaned_dev_server_in_repo_is_found_and_stopped(estate):
             if found:
                 break
             _t.sleep(0.1)
+        if found is None:  # DIAG (temporary)
+            rows = [x for x in runtime._process_table() if "http.server" in x["cmd"]]
+            t = {x["pid"]: x for x in runtime._process_table()}
+            print("DIAGROOT", root, os.path.realpath(root), "me", sorted(runtime._ancestors(os.getpid(), t)))
+            for x in rows:
+                print("DIAGROW", x, runtime._is_dev(x["cmd"]), runtime._cwds([x["pid"]]), runtime._orphaned(x["pid"], t), t.get(x["ppid"]))
         assert found is not None, "orphaned server in the repo was not found"
         assert found.kind == "process.orphan" and found.provenance == "attributed" and found.level == "standard"
         plan = planmod.build_plan([found], "standard", root, [])
