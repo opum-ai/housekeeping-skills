@@ -19,16 +19,26 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - name: DIAG orphan reparenting (temporary)
+      - name: DIAG orphan detection (temporary)
         run: |
           d=$(mktemp -d)
-          sh -c "cd $d && nohup python -m http.server 0 --bind 127.0.0.1 --directory $d >/dev/null 2>&1 &"
+          sh -c "cd '$d' && nohup $(which python) -m http.server 0 --bind 127.0.0.1 --directory '$d' >/dev/null 2>&1 &"
           sleep 1
-          pid=$(pgrep -f "http.server 0 --bind 127.0.0.1 --directory $d")
-          echo "pid=$pid cwd=$(readlink /proc/$pid/cwd)"
-          cur=$pid; for i in 1 2 3 4 5 6; do ps -o pid=,ppid=,uid=,etime=,command= -p $cur; cur=$(ps -o ppid= -p $cur | tr -d ' '); [ -z "$cur" ] || [ "$cur" = 0 ] && break; done
-          grep -i subreaper /proc/*/status 2>/dev/null | head || true
-          pkill -f "http.server 0 --bind 127.0.0.1 --directory $d" || true
+          cd scripts && D="$d" python - <<'PY'
+          import os
+          from hk import runtime as r
+          d = os.environ["D"]
+          rows = r._process_table()
+          t = {x["pid"]: x for x in rows}
+          me = r._ancestors(os.getpid(), t)
+          for x in rows:
+              if "http.server" in x["cmd"]:
+                  print("row", x, "uid", os.getuid(), "in_me", x["pid"] in me)
+                  print("is_dev", r._is_dev(x["cmd"]), "never", r.match_any(x["cmd"], r.NEVER_KILL))
+                  print("cwds", r._cwds([x["pid"]]), "orphaned", r._orphaned(x["pid"], t))
+          print("realpath", os.path.realpath(d))
+          PY
+          pkill -f "http.server 0 --bind 127.0.0.1" || true
       - name: pytest
         run: |
           python -m pip install --quiet pytest
@@ -58,13 +68,15 @@ jobs:
         with:
           node-version: '24'
       # Both versions come from files that already declare them, so there is no
-      # second pin to drift: lore from the docs index's generator stamp, quest
-      # from the managed block in CLAUDE.md (the opum-marketplace pattern).
+      # second pin to drift: lore from the NEWEST generator stamp in the bundle,
+      # quest from the managed block in CLAUDE.md (the opum-marketplace pattern).
+      # Newest, not docs/index.md's: the index keeps the stamp of whichever lore
+      # last rewrote it (0.9.2 here), and that lore fails the committed schemas.
       - name: Resolve declared lore and quest versions
         id: v
         run: |
           set -euo pipefail
-          lore="$(sed -n 's/.*by: lore\/\([0-9][0-9.]*\).*/\1/p' docs/index.md | head -1)"
+          lore="$(grep -rhoE 'by: lore/[0-9][0-9.]*' docs | sed 's/.*lore\///' | sort -V | tail -1)"
           quest="$(sed -n 's/.*Quest CLI \([0-9][0-9.]*\).*/\1/p' CLAUDE.md | head -1)"
           [ -n "$lore" ] && [ -n "$quest" ] || { echo "::error::could not resolve lore ($lore) or quest ($quest) version"; exit 1; }
           echo "lore=$lore" >> "$GITHUB_OUTPUT"
