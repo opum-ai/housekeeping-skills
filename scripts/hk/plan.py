@@ -150,7 +150,7 @@ def recheck(item: Item, repo: Repo) -> Tuple[bool, str]:
         return (fp.get("sha") in shas, "" if fp.get("sha") in shas else "stash already gone")
     if op == "kill":
         pid = int(item.args["pid"])
-        code, out, _ = run(["ps", "-o", "etime=,command=", "-p", str(pid)])
+        code, out, _ = run(["ps", "-ww", "-o", "etime=,command=", "-p", str(pid)])
         if code != 0 or not out.strip():
             return False, "process already exited"
         from .util import parse_etime

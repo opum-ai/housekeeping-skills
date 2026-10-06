@@ -264,6 +264,21 @@ def test_raise_class_caps_at_s3():
 
 # --- runtime: only processes attributable to the repo --------------------------
 
+def test_process_table_reads_full_command_lines_under_columns(monkeypatch):
+    """procps truncates `ps` output to $COLUMNS without -ww (HS-16); macOS ps never does."""
+    from hk import runtime
+
+    monkeypatch.setenv("COLUMNS", "80")
+    marker = "hk-wide-" + "x" * 160 + f"-{os.getpid()}"
+    p = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(30)", marker])
+    try:
+        rows = [r for r in runtime._process_table() if r["pid"] == p.pid]
+        assert rows and rows[0]["cmd"].endswith(marker), rows
+    finally:
+        p.kill()
+        p.wait()
+
+
 def test_orphaned_dev_server_in_repo_is_found_and_stopped(estate):
     import time as _t
 
