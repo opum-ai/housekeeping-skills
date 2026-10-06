@@ -19,6 +19,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
+      - name: DIAG orphan reparenting (temporary)
+        run: |
+          d=$(mktemp -d)
+          sh -c "cd $d && nohup python -m http.server 0 --bind 127.0.0.1 --directory $d >/dev/null 2>&1 &"
+          sleep 1
+          pid=$(pgrep -f "http.server 0 --bind 127.0.0.1 --directory $d")
+          echo "pid=$pid cwd=$(readlink /proc/$pid/cwd)"
+          cur=$pid; for i in 1 2 3 4 5 6; do ps -o pid=,ppid=,uid=,etime=,command= -p $cur; cur=$(ps -o ppid= -p $cur | tr -d ' '); [ -z "$cur" ] || [ "$cur" = 0 ] && break; done
+          grep -i subreaper /proc/*/status 2>/dev/null | head || true
+          pkill -f "http.server 0 --bind 127.0.0.1 --directory $d" || true
       - name: pytest
         run: |
           python -m pip install --quiet pytest
