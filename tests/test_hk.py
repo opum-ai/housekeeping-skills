@@ -274,7 +274,7 @@ def test_orphaned_dev_server_in_repo_is_found_and_stopped(estate):
     # Double-fork so the server is reparented (PPID 1): the orphan shape agents leave behind.
     # --directory is this test's own path, so cleanup can never match anyone else's server.
     subprocess.run(["sh", "-c", f"cd '{root}' && nohup {sys.executable} -m http.server 0 --bind 127.0.0.1 "
-                    f"--directory '{root}' >/tmp/hkdiag.log 2>&1 & echo {marker} >/dev/null"], check=True)
+                    f"--directory '{root}' >/dev/null 2>&1 & echo {marker} >/dev/null"], check=True)
     try:
         found = None
         for _ in range(50):
@@ -283,13 +283,6 @@ def test_orphaned_dev_server_in_repo_is_found_and_stopped(estate):
             if found:
                 break
             _t.sleep(0.1)
-        if found is None:  # DIAG (temporary)
-            rows = [x for x in runtime._process_table() if "http.server" in x["cmd"]]
-            t = {x["pid"]: x for x in runtime._process_table()}
-            print("DIAGLOG", open("/tmp/hkdiag.log").read().replace("\n", " | ")[-1500:])
-            print("DIAGROOT", root, os.path.realpath(root), "me", sorted(runtime._ancestors(os.getpid(), t)))
-            for x in rows:
-                print("DIAGROW", x, runtime._is_dev(x["cmd"]), runtime._cwds([x["pid"]]), runtime._orphaned(x["pid"], t), t.get(x["ppid"]))
         assert found is not None, "orphaned server in the repo was not found"
         assert found.kind == "process.orphan" and found.provenance == "attributed" and found.level == "standard"
         plan = planmod.build_plan([found], "standard", root, [])
