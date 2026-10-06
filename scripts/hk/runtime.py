@@ -178,7 +178,9 @@ def collect_docker(root: str, cfg: dict, ledger: dict, notes: List[str]) -> List
 
 
 def _process_table() -> List[dict]:
-    code, out, _ = run(["ps", "-Ao", "pid=,ppid=,uid=,etime=,command="], timeout=20)
+    # -ww: procps cuts the command column to $COLUMNS otherwise, and a cut command
+    # line hides dev servers and defeats the NEVER_KILL globs (HS-16).
+    code, out, _ = run(["ps", "-ww", "-Ao", "pid=,ppid=,uid=,etime=,command="], timeout=20)
     rows = []
     for line in out.splitlines():
         parts = line.split(None, 4)
